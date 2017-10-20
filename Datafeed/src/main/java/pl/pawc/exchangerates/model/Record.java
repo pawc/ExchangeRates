@@ -1,20 +1,17 @@
 package pl.pawc.exchangerates.model;
 
-import java.sql.Date;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Record{
 	
 	private String baseCurrency;
-	private String currency;
-	private double rate;
+	private String targetCurrency;
+	private double exchangeRate;
 	private Date date;
 	
-	public Record(String baseCurrency, String currency, double rate, Date date){
+	public Record() {
 		super();
-		this.baseCurrency = baseCurrency;
-		this.currency = currency;
-		this.rate = rate;
-		this.date = date;
 	}
 
 	public String getBaseCurrency() {
@@ -25,20 +22,20 @@ public class Record{
 		this.baseCurrency = baseCurrency;
 	}
 
-	public String getCurrency() {
-		return currency;
+	public String getTargetCurrency() {
+		return targetCurrency;
 	}
 
-	public void setCurrency(String currency) {
-		this.currency = currency;
+	public void setTargetCurrency(String currency) {
+		this.targetCurrency = currency;
 	}
 
-	public double getRate() {
-		return rate;
+	public double getExchangeRate() {
+		return exchangeRate;
 	}
 
-	public void setRate(double rate) {
-		this.rate = rate;
+	public void setExchangeRate(double rate) {
+		this.exchangeRate = rate;
 	}
 
 	public Date getDate() {
@@ -47,6 +44,23 @@ public class Record{
 
 	public void setDate(Date date) {
 		this.date = date;
-	}	
+	}
+	
+	public String toString(){
+		return baseCurrency+"/"+targetCurrency+"="+exchangeRate+" on "+dateToString(date);
+	}
+	
+	public String dateToString(Date date){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		String year = convert(calendar.get(Calendar.YEAR));
+		String month = convert(calendar.get(Calendar.MONTH)+1);
+		String day = convert(calendar.get(Calendar.DAY_OF_MONTH));
+		return year+"-"+month+"-"+day;
+	}
+	
+	public String convert(int i) {
+		return String.valueOf(i);
+	}
 
 }
