@@ -10,30 +10,26 @@ import java.util.ArrayList;
 
 import pl.pawc.exchangerates.model.Record;
 
-public class Parse implements IParser{
+public class Downloader implements IDownloader{
 	
-	private ArrayList<String> availableCurrencies;
+	private URL url;
+	private BufferedReader bfr;
 	private File file;
+	private FileWriter fw;
 
-	public ArrayList<Record> parse(String baseCurrency) {
-	
-		download(baseCurrency);
-		
-		return null;
-		
-	}
-
-	private void download(String baseCurrency){
+	public void download(String baseCurrency){
 		try {
-			URL url = new URL("http://www.floatrates.com/daily/"+baseCurrency+".xml");
-			BufferedReader bfr = new BufferedReader(new InputStreamReader(url.openStream()));
-			File file = new File(baseCurrency+".xml");
-			FileWriter fw = new FileWriter(file, false);
+			url = new URL("http://www.floatrates.com/daily/"+baseCurrency+".xml");
+			bfr = new BufferedReader(new InputStreamReader(url.openStream()));
+			file = new File(baseCurrency+".xml");
+			fw = new FileWriter(file, false);
 			
 			String inputLine;
+			
 			while((inputLine = bfr.readLine()) != null){
 				fw.write(inputLine);
 			}
+			
 			bfr.close();
 			fw.close();
 		}

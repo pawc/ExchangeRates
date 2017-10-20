@@ -2,7 +2,7 @@ package pl.pawc.exchangerates.model;
 
 import java.sql.Date;
 
-public class Record {
+public class Record{
 	
 	private String baseCurrency;
 	private String currency;
