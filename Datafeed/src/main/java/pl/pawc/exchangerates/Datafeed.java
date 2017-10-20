@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import pl.pawc.exchangerates.dao.RecordJdbcTemplate;
 import pl.pawc.exchangerates.model.Record;
 
 public class Datafeed{
@@ -19,9 +20,8 @@ public class Datafeed{
         IParser parser = (Parser) context.getBean("parser");
         ArrayList<Record> list = parser.parse(file, "PLN");
         
-        for(Record record : list){
-        	System.out.println(record.toString());
-        }
+        RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
+        recordJdbcTemplate.insert(list);
         
     }
 }

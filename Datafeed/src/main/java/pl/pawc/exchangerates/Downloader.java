@@ -25,9 +25,9 @@ public class Downloader implements IDownloader{
 			
 			String inputLine;
 			
-			while((inputLine = bfr.readLine()) != null){
-				fw.write(inputLine);
-			}
+				while((inputLine = bfr.readLine()) != null){
+					fw.write(inputLine);
+				}
 			
 			bfr.close();
 			fw.close();
