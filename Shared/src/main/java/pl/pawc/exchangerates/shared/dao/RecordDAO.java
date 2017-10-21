@@ -1,10 +1,10 @@
-package pl.pawc.exchangerates.dao;
+package pl.pawc.exchangerates.shared.dao;
 
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
-import pl.pawc.exchangerates.model.Record;
+import pl.pawc.exchangerates.shared.model.Record;
 
 public interface RecordDAO {
 

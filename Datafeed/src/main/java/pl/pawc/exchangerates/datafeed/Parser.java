@@ -1,4 +1,4 @@
-package pl.pawc.exchangerates;
+package pl.pawc.exchangerates.datafeed;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
-import pl.pawc.exchangerates.model.Record;
+import pl.pawc.exchangerates.shared.model.Record;
 
 public class Parser implements IParser {
 

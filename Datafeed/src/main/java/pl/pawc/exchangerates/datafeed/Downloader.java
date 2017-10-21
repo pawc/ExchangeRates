@@ -1,4 +1,4 @@
-package pl.pawc.exchangerates;
+package pl.pawc.exchangerates.datafeed;
 
 import java.io.BufferedReader;
 import java.io.File;
