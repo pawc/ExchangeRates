@@ -1,9 +1,9 @@
-package pl.pawc.exchangerates;
+package pl.pawc.exchangerates.datafeed;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import pl.pawc.exchangerates.model.Record;
+import pl.pawc.exchangerates.shared.model.Record;
 
 
 public interface IParser{

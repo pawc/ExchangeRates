@@ -1,4 +1,4 @@
-package pl.pawc.exchangerates;
+package pl.pawc.exchangerates.datafeed;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -15,6 +15,6 @@ public class DatafeedTest extends TestCase{
     }
 
     public void testDatafeed(){
-        assertTrue( true );
+        assertTrue(true);
     }
 }

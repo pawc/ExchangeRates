@@ -1,4 +1,4 @@
-package pl.pawc.exchangerates.dao;
+package pl.pawc.exchangerates.shared.dao;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,7 +7,7 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import pl.pawc.exchangerates.model.Record;
+import pl.pawc.exchangerates.shared.model.Record;
 
 public class RecordJdbcTemplate implements RecordDAO{
 	

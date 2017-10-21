@@ -1,11 +1,11 @@
-package pl.pawc.exchangerates.dao;
+package pl.pawc.exchangerates.shared.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import pl.pawc.exchangerates.model.Record;
+import pl.pawc.exchangerates.shared.model.Record;
 
 public class RecordMapper implements RowMapper<Record>{
 

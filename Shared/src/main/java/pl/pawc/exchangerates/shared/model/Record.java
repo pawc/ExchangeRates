@@ -1,4 +1,4 @@
-package pl.pawc.exchangerates.model;
+package pl.pawc.exchangerates.shared.model;
 
 import java.util.Calendar;
 import java.util.Date;
