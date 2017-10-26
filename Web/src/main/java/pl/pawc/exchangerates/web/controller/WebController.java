@@ -13,6 +13,9 @@ import pl.pawc.exchangerates.shared.model.Record;
 
 import org.springframework.ui.ModelMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Controller
 @RequestMapping("/")
 public class WebController{
@@ -23,6 +26,15 @@ public class WebController{
 		RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
 		ArrayList<Record> list = recordJdbcTemplate.getRecords();
 		model.addAttribute("records", list);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		try{
+			model.addAttribute("recordsJackson", objectMapper.writeValueAsString(list));
+		} 
+		catch(JsonProcessingException e){
+			e.printStackTrace();
+		}
+		
 		return "result";
 	}
 
