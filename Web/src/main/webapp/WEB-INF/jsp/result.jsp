@@ -3,17 +3,14 @@
 <html>
 	<head>
 	<%@ page isELIgnored="false" %>
-	<title>Results222</title>
+	<title>Results</title>
 	</head>
-   
-    <table>   
-   	<c:forEach items="${records}" var="record">
-	<tr>
-		<td>${record.baseCurrency}</td>
-		<td>${record.targetCurrency}</td>
-		<td>${record.exchangeRate}</td>
-		<td>${record.date}</td>
-	</tr>
-	</c:forEach>
-	</table>
+	
+	<script language="javascript" type="text/javascript">
+	var rec = ${recordsJackson};
+	for(var i = 0, len = rec.length; i < len; i++){
+		var text = "<p>"+rec[i].targetCurrency+"/"+rec[i].baseCurrency+" on "+rec[i].date+" : "+rec[i].exchangeRate+"</p>";
+		document.write(text)
+	}
+	</script>
 </html>
