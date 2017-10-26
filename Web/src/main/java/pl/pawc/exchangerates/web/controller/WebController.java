@@ -30,12 +30,27 @@ public class WebController{
 		ObjectMapper objectMapper = new ObjectMapper();
 		try{
 			model.addAttribute("recordsJackson", objectMapper.writeValueAsString(list));
+			model.addAttribute("minVal", objectMapper.writeValueAsString(getExtrema(list)[0]));
+			model.addAttribute("maxVal", objectMapper.writeValueAsString(getExtrema(list)[1]));
 		} 
 		catch(JsonProcessingException e){
 			e.printStackTrace();
 		}
 		
 		return "result";
+	}
+
+	private double[] getExtrema(ArrayList<Record> list){
+		double[] result = new double[2];
+		double first = list.get(0).getExchangeRate();
+		result[0] = first;
+		result[1] = first;
+		for(Record record : list){
+			double temp = record.getExchangeRate();
+			if(temp < result[0]) result[0] = temp;
+			if(temp > result[1]) result[1] = temp;
+		}
+		return result;
 	}
 
 }
