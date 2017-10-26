@@ -14,18 +14,18 @@ public class RecordJdbcTemplate implements RecordDAO{
 	private DataSource dataSource;
 	private JdbcTemplate jdbcTemplateObject;
 
-	public void setDataSource(DataSource dataSource) {
+	public void setDataSource(DataSource dataSource){
 		this.dataSource = dataSource;
 		this.jdbcTemplateObject = new JdbcTemplate(dataSource);
 	}
 
-	public void insert(ArrayList<Record> records) {
+	public void insert(ArrayList<Record> records){
 		for(Record record : records){
 			insert(record);
 		}
 	}
 	
-	public void insert(Record record) {
+	public void insert(Record record){
 		String SQL = "insert into records (baseCurrency, targetCurrency, exchangeRate, date) "
 			+ "values (?, ?, ?, ?)";
 		
@@ -38,9 +38,10 @@ public class RecordJdbcTemplate implements RecordDAO{
 		
 	}
 
-	public ArrayList<Record> getRecords() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Record> getRecords(){
+		String SQL = "select * from records where targetCurrency='EUR'";
+		ArrayList<Record> results = (ArrayList<Record>) jdbcTemplateObject.query(SQL, new RecordMapper()); 
+		return results;
 	}
 
 }
