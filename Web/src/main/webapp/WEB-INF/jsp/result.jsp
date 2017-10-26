@@ -4,13 +4,44 @@
 	<head>
 	<%@ page isELIgnored="false" %>
 	<title>Results</title>
-	</head>
 	
-	<script language="javascript" type="text/javascript">
-	var rec = ${recordsJackson};
-	for(var i = 0, len = rec.length; i < len; i++){
-		var text = "<p>"+rec[i].targetCurrency+"/"+rec[i].baseCurrency+" on "+rec[i].date+" : "+rec[i].exchangeRate+"</p>";
-		document.write(text)
-	}
+	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script type="text/javascript">
+		window.onload = function () {
+		var rec = ${recordsJackson};
+		generatedDataPoints = [];
+		
+		for(var i = 0, len = rec.length; i < len; i++){
+			generatedDataPoints.push({
+				y : rec[i].exchangeRate,
+				label : rec[i].date
+			})
+		}
+		
+		
+		var chart = new CanvasJS.Chart("chartContainer", {
+			title:{
+				text: "EUR/PLN"              
+			},
+			data: [              
+			{
+				type: "line",
+				dataPoints: generatedDataPoints
+			}
+			],
+			axisY:{
+			   minimum: ${minVal},
+			   maximum: ${maxVal},
+			 }
+		});
+		chart.render();
+		}
 	</script>
+
+</head>
+
+<body>
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+</body>
+	
 </html>
