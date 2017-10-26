@@ -12,6 +12,7 @@
 	<modules>
 		<module>Shared</module>
 		<module>Datafeed</module>
+		<module>Web</module>
 	</modules>
 	
 	<properties>
