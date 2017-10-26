@@ -145,7 +145,7 @@
 	</dependencies>
 	
 	<build>
-	<finalName>Web</finalName>
+    	<finalName>HelloWeb</finalName>
 	</build>
 	
 </project>
