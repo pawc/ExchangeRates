@@ -3,7 +3,8 @@
 <html>
 	<head>
 	<%@ page isELIgnored="false" %>
-	<title>Results</title>
+	<link rel="stylesheet" type="text/css" href="/Web/static/css/main.css">
+	<title>Exchange Rates Web Application</title>
 	
 	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	<script type="text/javascript">
@@ -32,7 +33,8 @@
 			axisY:{
 			   minimum: ${model.minVal},
 			   maximum: ${model.maxVal},
-			 }
+			 },
+			backgroundColor: "#EEEEEC"
 		});
 		chart.render();
 		}
@@ -42,23 +44,20 @@
 
 <body>
 	<form name="targetCurrencySwitch" method="GET" action="result">
-		<table>
-			<tr>
-				<td><select name="targetCurrency" id="targetCurrency">
-				<option value="-1" selected disabled>-</option>
-				<script type="text/javascript">
+		
+			<select name="targetCurrency" id="targetCurrency">
+			<option value="-1" selected disabled>-</option>
+			<script type="text/javascript">
 				var currencies = ${model.currencies};
 				for(var i = 0, len = currencies.length; i < len; i++){
 					currency = currencies[i];
 					document.write("<option value="+currency+">"+currency+"</option>");
 				}
-				</script>
-
-
-				</select></td>
-				<td><input type="submit" value="Change target currency" style="width: 200;"></td>
-			</tr>
-		</table>
+			</script>
+			</select>
+			
+			<input type="submit" value="Change" style="width: 100;"></td>
+				
 	</form>
 
 	<div id="chartContainer" style="height: 400px; width: 100%;"></div>

@@ -67,6 +67,8 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 		
 		double min = list.get(0).getExchangeRate();
 		double max = list.get(list.size()-1).getExchangeRate();
+		min = min-(max-min)*0.1;
+		max = max+(max-min)*0.1;
 		
 		model.addAttribute("minVal", objectMapper.writeValueAsString(min));
 		model.addAttribute("maxVal", objectMapper.writeValueAsString(max));
