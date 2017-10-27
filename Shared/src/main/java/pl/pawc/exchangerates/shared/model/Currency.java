@@ -1,6 +1,7 @@
 package pl.pawc.exchangerates.shared.model;
 
 public enum Currency{
+	PLN,
 	USD,
 	EUR,
 	GBP,
