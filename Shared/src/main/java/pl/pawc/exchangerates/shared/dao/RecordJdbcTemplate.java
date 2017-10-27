@@ -38,8 +38,8 @@ public class RecordJdbcTemplate implements RecordDAO{
 		
 	}
 
-	public ArrayList<Record> getRecords(){
-		String SQL = "select * from records where targetCurrency='EUR'";
+	public ArrayList<Record> getRecords(String targetCurrency){
+		String SQL = "select * from records where targetCurrency='"+targetCurrency+"';";
 		ArrayList<Record> results = (ArrayList<Record>) jdbcTemplateObject.query(SQL, new RecordMapper()); 
 		return results;
 	}
