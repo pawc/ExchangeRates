@@ -8,7 +8,7 @@
 	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	<script type="text/javascript">
 		window.onload = function () {
-		var rec = ${recordsJackson};
+		var rec = ${model.recordsJackson};
 		generatedDataPoints = [];
 		
 		for(var i = 0, len = rec.length; i < len; i++){
@@ -21,7 +21,7 @@
 		
 		var chart = new CanvasJS.Chart("chartContainer", {
 			title:{
-				text: "EUR/PLN"              
+				text: "${model.targetCurrency}/PLN"       
 			},
 			data: [              
 			{
@@ -30,8 +30,8 @@
 			}
 			],
 			axisY:{
-			   minimum: ${minVal},
-			   maximum: ${maxVal},
+			   minimum: ${model.minVal},
+			   maximum: ${model.maxVal},
 			 }
 		});
 		chart.render();
@@ -41,7 +41,7 @@
 </head>
 
 <body>
-<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+	<div id="chartContainer" style="height: 300px; width: 100%;"></div>
 </body>
 	
 </html>
