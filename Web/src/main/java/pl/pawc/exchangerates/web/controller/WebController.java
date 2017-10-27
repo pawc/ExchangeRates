@@ -3,6 +3,7 @@ package pl.pawc.exchangerates.web.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,14 +36,23 @@ public class WebController{
 
 @RequestMapping("result")
 public ModelAndView plot(HttpServletRequest request, HttpServletResponse response){
+	
 	String param = request.getParameter("targetCurrency");
+	List<Currency> listOfCurrencies = EnumUtils.getEnumList(Currency.class);
+	List<String> listOfCurrenciesString = convert(listOfCurrencies);
+
 	if(param==null){
 		request.getSession().setAttribute("targetCurrency", "EUR");
 	}
-	else {
-		request.getSession().setAttribute("targetCurrency", param);
+	else{
+		if(listOfCurrenciesString.contains(param)){
+			request.getSession().setAttribute("targetCurrency", param);	
+		}
+		else{
+			return new ModelAndView("redirect:/result");
+		}
 	}
-
+	
 	String targetCurrency = (String) request.getSession().getAttribute("targetCurrency");
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
@@ -56,7 +66,7 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	
 	try{
 		model.addAttribute("recordsJackson", objectMapper.writeValueAsString(list));
-		model.addAttribute("currencies", objectMapper.writeValueAsString(EnumUtils.getEnumList(Currency.class)));
+		model.addAttribute("currencies", objectMapper.writeValueAsString(listOfCurrencies));
 		
 		Collections.sort(list, new Comparator<Record>(){
 			public int compare(Record r1, Record r2) {
@@ -78,6 +88,14 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	}
 	
 	return new ModelAndView("result", "model", model);
-}
+	}
+
+	private List<String> convert(List<Currency> listOfCurrencies) {
+		List<String> result = new ArrayList<String>();
+		for(Currency currency : listOfCurrencies) {
+			result.add(currency.toString());
+		}
+		return result;
+	}
 
 }
