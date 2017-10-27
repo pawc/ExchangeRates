@@ -1,6 +1,10 @@
 package pl.pawc.exchangerates.web.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -30,27 +34,25 @@ public class WebController{
 		ObjectMapper objectMapper = new ObjectMapper();
 		try{
 			model.addAttribute("recordsJackson", objectMapper.writeValueAsString(list));
-			model.addAttribute("minVal", objectMapper.writeValueAsString(getExtrema(list)[0]));
-			model.addAttribute("maxVal", objectMapper.writeValueAsString(getExtrema(list)[1]));
+			
+			Collections.sort(list, new Comparator<Record>(){
+				public int compare(Record r1, Record r2) {
+						return Double.compare(r1.getExchangeRate(), r2.getExchangeRate());		
+				}
+				
+			});
+			
+			double min = list.get(0).getExchangeRate();
+			double max = list.get(list.size()-1).getExchangeRate();
+			
+			model.addAttribute("minVal", objectMapper.writeValueAsString(min));
+			model.addAttribute("maxVal", objectMapper.writeValueAsString(max));
 		} 
 		catch(JsonProcessingException e){
 			e.printStackTrace();
 		}
 		
 		return "result";
-	}
-
-	private double[] getExtrema(ArrayList<Record> list){
-		double[] result = new double[2];
-		double first = list.get(0).getExchangeRate();
-		result[0] = first;
-		result[1] = first;
-		for(Record record : list){
-			double temp = record.getExchangeRate();
-			if(temp < result[0]) result[0] = temp;
-			if(temp > result[1]) result[1] = temp;
-		}
-		return result;
 	}
 
 }
