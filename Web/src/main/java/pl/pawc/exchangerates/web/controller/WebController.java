@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import pl.pawc.exchangerates.shared.dao.RecordJdbcTemplate;
 import pl.pawc.exchangerates.shared.model.Currency;
 import pl.pawc.exchangerates.shared.model.Record;
+import pl.pawc.exchangerates.shared.utils.Util;
 
 import org.springframework.ui.ModelMap;
 
@@ -37,16 +38,19 @@ public class WebController{
 @RequestMapping("result")
 public ModelAndView plot(HttpServletRequest request, HttpServletResponse response){
 	
-	String param = request.getParameter("targetCurrency");
+	String paramTargetCurrency = request.getParameter("targetCurrency");
+	String paramBaseCurrency = request.getParameter("baseCurrency");
 	List<Currency> listOfCurrencies = EnumUtils.getEnumList(Currency.class);
 	List<String> listOfCurrenciesString = convert(listOfCurrencies);
 
-	if(param==null){
+	if(paramTargetCurrency == null || paramBaseCurrency == null){
 		request.getSession().setAttribute("targetCurrency", "EUR");
+		request.getSession().setAttribute("baseCurrency", "PLN");
 	}
 	else{
-		if(listOfCurrenciesString.contains(param)){
-			request.getSession().setAttribute("targetCurrency", param);	
+		if(listOfCurrenciesString.contains(paramTargetCurrency) && listOfCurrenciesString.contains(paramBaseCurrency)){
+			request.getSession().setAttribute("targetCurrency", paramTargetCurrency);
+			request.getSession().setAttribute("baseCurrency", paramBaseCurrency);
 		}
 		else{
 			return new ModelAndView("redirect:/result");
@@ -54,13 +58,33 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	}
 	
 	String targetCurrency = (String) request.getSession().getAttribute("targetCurrency");
+	String baseCurrency = (String) request.getSession().getAttribute("baseCurrency");
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
-	ArrayList<Record> list = recordJdbcTemplate.getRecords(targetCurrency);
+	
+	ArrayList<Record> list = null;
+
+	if(baseCurrency.equals(targetCurrency)){
+		list = recordJdbcTemplate.getRecords("EUR");
+		list = Util.fillWithOnes(list);
+	}
+	else if(targetCurrency.equals("PLN")){
+		list = recordJdbcTemplate.getRecords(baseCurrency);
+		list = Util.inverseRates(list);
+	}
+	else if(!"PLN".equals(targetCurrency) && !"PLN".equals(baseCurrency)){
+		ArrayList<Record> list1 = recordJdbcTemplate.getRecords(targetCurrency);
+		ArrayList<Record> list2 = recordJdbcTemplate.getRecords(baseCurrency);
+		list = Util.evaluate(list1, list2);
+	}
+	else{
+		list = recordJdbcTemplate.getRecords(targetCurrency);
+	}
 	
 	ModelMap model = new ModelMap();
 	model.addAttribute("records", list);
 	model.addAttribute("targetCurrency", targetCurrency);
+	model.addAttribute("baseCurrency", baseCurrency);
 	
 	ObjectMapper objectMapper = new ObjectMapper();
 	
