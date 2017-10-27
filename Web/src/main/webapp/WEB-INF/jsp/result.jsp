@@ -41,7 +41,28 @@
 </head>
 
 <body>
-	<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+	<form name="targetCurrencySwitch" method="GET" action="result">
+		<table>
+			<tr>
+				<td><select name="targetCurrency" id="targetCurrency">
+				<option value="-1" selected disabled>-</option>
+				<script type="text/javascript">
+				var currencies = ${model.currencies};
+				for(var i = 0, len = currencies.length; i < len; i++){
+					currency = currencies[i];
+					document.write("<option value="+currency+">"+currency+"</option>");
+				}
+				</script>
+
+
+				</select></td>
+				<td><input type="submit" value="Change target currency" style="width: 200;"></td>
+			</tr>
+		</table>
+	</form>
+
+	<div id="chartContainer" style="height: 400px; width: 100%;"></div>
+		
 </body>
 	
 </html>
