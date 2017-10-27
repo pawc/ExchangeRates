@@ -46,12 +46,13 @@
 	<form name="targetCurrencySwitch" method="GET" action="result">
 		
 			<select name="targetCurrency" id="targetCurrency">
-			<option value="-1" selected disabled>-</option>
 			<script type="text/javascript">
 				var currencies = ${model.currencies};
 				for(var i = 0, len = currencies.length; i < len; i++){
 					currency = currencies[i];
-					document.write("<option value="+currency+">"+currency+"</option>");
+					selection = "";
+					if("${model.targetCurrency}".valueOf() == currency.valueOf()) selection = "selected";
+					document.write("<option value="+currency+" "+selection+">"+currency+"</option>");			
 				}
 			</script>
 			</select>
