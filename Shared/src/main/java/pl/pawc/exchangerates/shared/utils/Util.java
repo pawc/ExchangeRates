@@ -33,12 +33,23 @@ public class Util {
 	}
 	
 	public static ArrayList<Record> evaluate(ArrayList<Record> list1, ArrayList<Record> list2){
+		ArrayList<Record> result = new ArrayList<Record>();
 		for(int i=0; i<=list1.size()-1; i++){
-			list1.get(i).setBaseCurrency(list2.get(i).getTargetCurrency());
-			double temp = list1.get(i).getExchangeRate()/list2.get(i).getExchangeRate();
-			list1.get(i).setExchangeRate(temp);
+			String targetCurrency = list1.get(i).getTargetCurrency();
+			String baseCurrency = list2.get(i).getTargetCurrency();
+			Date date = list1.get(i).getDate();
+			double rate = list1.get(i).getExchangeRate()/list2.get(i).getExchangeRate();
+
+			Record record = new Record();
+			record.setTargetCurrency(targetCurrency);
+			record.setBaseCurrency(baseCurrency);
+			record.setDate(date);
+			record.setExchangeRate(rate);
+			
+			result.add(record);
 		}
-		return list1;
+		
+		return result;
 	}
 	
 	public static ArrayList<Record> sortByDates(ArrayList<Record> list) {

@@ -1,6 +1,5 @@
 package pl.pawc.exchangerates.web.controller;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +33,19 @@ public class WebController{
 		return new ModelAndView("redirect:/result");
 	}
 
+@RequestMapping("invert")
+public ModelAndView invert(HttpServletRequest request, HttpServletResponse response){
+	
+	ModelMap model = new ModelMap();
+	
+	String targetCurrency = (String) request.getSession().getAttribute("targetCurrency");
+	String baseCurrency = (String) request.getSession().getAttribute("baseCurrency");
+	request.getSession().setAttribute("baseCurrency", targetCurrency);
+	request.getSession().setAttribute("targetCurrency", baseCurrency);
+
+	return new ModelAndView("redirect:/result");
+}
+
 @RequestMapping("result")
 public ModelAndView plot(HttpServletRequest request, HttpServletResponse response){
 	
@@ -45,11 +57,7 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	List<Currency> listOfCurrencies = EnumUtils.getEnumList(Currency.class);
 	List<String> listOfCurrenciesString = Util.convertTo(listOfCurrencies);
 
-	if(paramTargetCurrency == null || paramBaseCurrency == null){
-		request.getSession().setAttribute("targetCurrency", "EUR");
-		request.getSession().setAttribute("baseCurrency", "PLN");
-	}
-	else{
+	if(paramTargetCurrency != null || paramBaseCurrency != null){
 		if(listOfCurrenciesString.contains(paramTargetCurrency) && listOfCurrenciesString.contains(paramBaseCurrency)){
 			request.getSession().setAttribute("targetCurrency", paramTargetCurrency);
 			request.getSession().setAttribute("baseCurrency", paramBaseCurrency);
@@ -58,12 +66,29 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 			return new ModelAndView("redirect:/result");
 		}
 	}
+	else {
+		if(request.getSession().getAttribute("targetCurrency") == null) request.getSession().setAttribute("targetCurrency", "EUR");
+		if(request.getSession().getAttribute("baseCurrency") == null) request.getSession().setAttribute("baseCurrency", "PLN");
+	}
 	
-	request.getSession().setAttribute("dateFrom", paramDateFrom);
-	request.getSession().setAttribute("dateTo", paramDateTo);
+	String dateFrom = null;
+	String dateTo = null;
 	
-	String dateFrom = (String) request.getSession().getAttribute("dateFrom");
-	String dateTo = (String) request.getSession().getAttribute("dateTo");
+	if(paramDateFrom != null && paramDateTo !=null) {
+		dateFrom = paramDateFrom;
+		dateTo = paramDateTo;
+		request.getSession().setAttribute("dateFrom", dateFrom);
+		request.getSession().setAttribute("dateTo", dateTo);
+	}
+	else {
+		if(request.getSession().getAttribute("dateFrom") != null) {
+			dateFrom = (String) request.getSession().getAttribute("dateFrom");
+		}
+		if(request.getSession().getAttribute("dateTo") != null) {
+			dateTo = (String) request.getSession().getAttribute("dateTo");
+		}
+	}
+
 	
 	String targetCurrency = (String) request.getSession().getAttribute("targetCurrency");
 	String baseCurrency = (String) request.getSession().getAttribute("baseCurrency");

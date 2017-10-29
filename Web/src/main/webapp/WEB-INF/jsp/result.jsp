@@ -43,6 +43,7 @@
 </head>
 
 <body>
+	<table><tr>
 	<form name="targetCurrencySwitch" method="GET" action="result">
 			
 			<select name="targetCurrency" id="targetCurrency">
@@ -76,6 +77,11 @@
 			<input type="submit" value="plot" style="width: 100;"></td>
 				
 	</form>
+	
+	<form name="invert" method="GET" action="invert">
+		<input type="submit" value="invert">
+	</form>
+	</tr></table>
 
 	<div id="chartContainer" style="height: 400px; width: 100%;"></div>
 		
