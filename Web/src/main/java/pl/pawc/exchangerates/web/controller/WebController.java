@@ -40,6 +40,9 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	
 	String paramTargetCurrency = request.getParameter("targetCurrency");
 	String paramBaseCurrency = request.getParameter("baseCurrency");
+	String paramDateFrom = request.getParameter("dateFrom");
+	String paramDateTo = request.getParameter("dateTo");
+	
 	List<Currency> listOfCurrencies = EnumUtils.getEnumList(Currency.class);
 	List<String> listOfCurrenciesString = convert(listOfCurrencies);
 
@@ -68,17 +71,20 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	
 	ModelMap model = new ModelMap();
 	
-	setAttributes(listOfCurrencies, targetCurrency, baseCurrency, list, model);
+	setAttributes(listOfCurrencies, targetCurrency, baseCurrency, paramDateFrom, paramDateTo, list, model);
 	
 	return new ModelAndView("result", "model", model);
 	
 }
 
 private void setAttributes(List<Currency> listOfCurrencies, String targetCurrency, String baseCurrency,
-		ArrayList<Record> list, ModelMap model) {
+	String dateFrom, String dateTo, ArrayList<Record> list, ModelMap model){
+	
 	model.addAttribute("records", list);
 	model.addAttribute("targetCurrency", targetCurrency);
 	model.addAttribute("baseCurrency", baseCurrency);
+	model.addAttribute("dateFrom", dateFrom);
+	model.addAttribute("dateTo", dateTo);
 	
 	ObjectMapper objectMapper = new ObjectMapper();
 	
