@@ -44,7 +44,7 @@
 
 <body>
 	<form name="targetCurrencySwitch" method="GET" action="result">
-			Plot
+			
 			<select name="targetCurrency" id="targetCurrency">
 			<script type="text/javascript">
 				var currencies = ${model.currencies};
@@ -56,7 +56,7 @@
 				}
 			</script>
 			</select>
-			against
+			<b>/</b>
 			<select name="baseCurrency" id="baseCurrency">
 			<script type="text/javascript">
 				var currencies = ${model.currencies};
@@ -68,12 +68,12 @@
 				}
 			</script>
 			</select>
-			since
+			
 			<input type="date" name="dateFrom" size="8" value="${model.dateFrom}">
-			until
+			<b>-</b>
 			<input type="date" name="dateTo" size="8" value="${model.dateTo}">
 			
-			<input type="submit" value="go!" style="width: 100;"></td>
+			<input type="submit" value="plot" style="width: 100;"></td>
 				
 	</form>
 
