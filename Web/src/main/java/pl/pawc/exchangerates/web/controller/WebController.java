@@ -1,9 +1,14 @@
 package pl.pawc.exchangerates.web.controller;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,19 +93,23 @@ private void setAttributes(List<Currency> listOfCurrencies, String targetCurrenc
 	
 	ObjectMapper objectMapper = new ObjectMapper();
 	
+	try {
+		list = removeRecordsOutsideDates(list, dateFrom, dateTo);
+	} catch (ParseException e1) {
+		e1.printStackTrace();
+	}
+	
+	list = sortByRates(list);
+	
+	double min = list.get(0).getExchangeRate();
+	double max = list.get(list.size()-1).getExchangeRate();
+	
+	list = sortByDates(list);
+	
 	try{
 		model.addAttribute("recordsJackson", objectMapper.writeValueAsString(list));
 		model.addAttribute("currencies", objectMapper.writeValueAsString(listOfCurrencies));
-		
-		Collections.sort(list, new Comparator<Record>(){
-			public int compare(Record r1, Record r2) {
-					return Double.compare(r1.getExchangeRate(), r2.getExchangeRate());		
-			}
-			
-		});
-		
-		double min = list.get(0).getExchangeRate();
-		double max = list.get(list.size()-1).getExchangeRate();
+
 		min = min-(max-min)*0.1;
 		max = max+(max-min)*0.1;
 		
@@ -110,6 +119,61 @@ private void setAttributes(List<Currency> listOfCurrencies, String targetCurrenc
 	catch(JsonProcessingException e){
 		e.printStackTrace();
 	}
+
+}
+
+private ArrayList<Record> sortByDates(ArrayList<Record> list) {
+	Collections.sort(list, new Comparator<Record>(){
+		public int compare(Record r1, Record r2) {
+			return r1.getDate().compareTo(r2.getDate());	
+		}
+		
+	});
+	
+	return list;
+}
+
+private ArrayList<Record> sortByRates(ArrayList<Record> list) {
+	Collections.sort(list, new Comparator<Record>(){
+		public int compare(Record r1, Record r2) {
+			return Double.compare(r1.getExchangeRate(), r2.getExchangeRate());		
+		}
+		
+	});
+	
+	return list;
+}
+
+private ArrayList<Record> removeRecordsOutsideDates(ArrayList<Record> list, String dateFrom, String dateTo) throws ParseException{
+	Date since = null;
+	Date until = null;
+	DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+	if(dateFrom == null || dateFrom.equals("")) {
+		since = new Date(Long.MIN_VALUE);
+	}
+	else {
+		since = format.parse(dateFrom);
+	}
+		
+	if(dateTo == null || dateTo.equals("")) {
+		until = new Date(Long.MAX_VALUE);
+	}
+	else {
+		until = format.parse(dateTo);
+	}
+	
+	ArrayList<Record> boundedList = new ArrayList<Record>();
+	
+	for(Record record : list) {
+		if(record.getDate().compareTo(since) >= 0 && record.getDate().compareTo(until) <= 0 ) boundedList.add(record); 
+	}
+	
+	for(Record record : boundedList) {
+		System.out.println(record.getDate().toString());
+	}
+	
+	return boundedList;
+	
 }
 
 private ArrayList<Record> getResults(String targetCurrency, String baseCurrency,
