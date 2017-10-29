@@ -1,14 +1,8 @@
 package pl.pawc.exchangerates.web.controller;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,7 +43,7 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	String paramDateTo = request.getParameter("dateTo");
 	
 	List<Currency> listOfCurrencies = EnumUtils.getEnumList(Currency.class);
-	List<String> listOfCurrenciesString = convert(listOfCurrencies);
+	List<String> listOfCurrenciesString = Util.convertTo(listOfCurrencies);
 
 	if(paramTargetCurrency == null || paramBaseCurrency == null){
 		request.getSession().setAttribute("targetCurrency", "EUR");
@@ -65,8 +59,15 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 		}
 	}
 	
+	request.getSession().setAttribute("dateFrom", paramDateFrom);
+	request.getSession().setAttribute("dateTo", paramDateTo);
+	
+	String dateFrom = (String) request.getSession().getAttribute("dateFrom");
+	String dateTo = (String) request.getSession().getAttribute("dateTo");
+	
 	String targetCurrency = (String) request.getSession().getAttribute("targetCurrency");
 	String baseCurrency = (String) request.getSession().getAttribute("baseCurrency");
+	
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
 	
@@ -76,7 +77,7 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	
 	ModelMap model = new ModelMap();
 	
-	setAttributes(listOfCurrencies, targetCurrency, baseCurrency, paramDateFrom, paramDateTo, list, model);
+	setAttributes(listOfCurrencies, targetCurrency, baseCurrency, dateFrom, dateTo, list, model);
 	
 	return new ModelAndView("result", "model", model);
 	
@@ -93,18 +94,14 @@ private void setAttributes(List<Currency> listOfCurrencies, String targetCurrenc
 	
 	ObjectMapper objectMapper = new ObjectMapper();
 	
-	try {
-		list = removeRecordsOutsideDates(list, dateFrom, dateTo);
-	} catch (ParseException e1) {
-		e1.printStackTrace();
-	}
+	list = Util.removeRecordsOutsideDates(list, dateFrom, dateTo);
 	
-	list = sortByRates(list);
+	list = Util.sortByRates(list);
 	
 	double min = list.get(0).getExchangeRate();
 	double max = list.get(list.size()-1).getExchangeRate();
 	
-	list = sortByDates(list);
+	list = Util.sortByDates(list);
 	
 	try{
 		model.addAttribute("recordsJackson", objectMapper.writeValueAsString(list));
@@ -120,60 +117,6 @@ private void setAttributes(List<Currency> listOfCurrencies, String targetCurrenc
 		e.printStackTrace();
 	}
 
-}
-
-private ArrayList<Record> sortByDates(ArrayList<Record> list) {
-	Collections.sort(list, new Comparator<Record>(){
-		public int compare(Record r1, Record r2) {
-			return r1.getDate().compareTo(r2.getDate());	
-		}
-		
-	});
-	
-	return list;
-}
-
-private ArrayList<Record> sortByRates(ArrayList<Record> list) {
-	Collections.sort(list, new Comparator<Record>(){
-		public int compare(Record r1, Record r2) {
-			return Double.compare(r1.getExchangeRate(), r2.getExchangeRate());		
-		}
-		
-	});
-	
-	return list;
-}
-
-private ArrayList<Record> removeRecordsOutsideDates(ArrayList<Record> list, String dateFrom, String dateTo) throws ParseException{
-	Date since = null;
-	Date until = null;
-	DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-	if(dateFrom == null || dateFrom.equals("")) {
-		since = new Date(Long.MIN_VALUE);
-	}
-	else {
-		since = format.parse(dateFrom);
-	}
-		
-	if(dateTo == null || dateTo.equals("")) {
-		until = new Date(Long.MAX_VALUE);
-	}
-	else {
-		until = format.parse(dateTo);
-	}
-	
-	ArrayList<Record> boundedList = new ArrayList<Record>();
-	
-	for(Record record : list) {
-		if(record.getDate().compareTo(since) >= 0 && record.getDate().compareTo(until) <= 0 ) boundedList.add(record); 
-	}
-	
-	for(Record record : boundedList) {
-		System.out.println(record.getDate().toString());
-	}
-	
-	return boundedList;
-	
 }
 
 private ArrayList<Record> getResults(String targetCurrency, String baseCurrency,
@@ -196,14 +139,6 @@ private ArrayList<Record> getResults(String targetCurrency, String baseCurrency,
 		list = recordJdbcTemplate.getRecords(targetCurrency);
 	}
 	return list;
-}
-
-private List<String> convert(List<Currency> listOfCurrencies) {
-	List<String> result = new ArrayList<String>();
-	for(Currency currency : listOfCurrencies) {
-		result.add(currency.toString());
-	}
-	return result;
 }
 
 }
