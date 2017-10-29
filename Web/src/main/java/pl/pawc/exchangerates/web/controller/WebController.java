@@ -64,24 +64,18 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	
 	ArrayList<Record> list = null;
 
-	if(baseCurrency.equals(targetCurrency)){
-		list = recordJdbcTemplate.getRecords("EUR");
-		list = Util.fillWithOnes(list);
-	}
-	else if(targetCurrency.equals("PLN")){
-		list = recordJdbcTemplate.getRecords(baseCurrency);
-		list = Util.inverseRates(list);
-	}
-	else if(!"PLN".equals(targetCurrency) && !"PLN".equals(baseCurrency)){
-		ArrayList<Record> list1 = recordJdbcTemplate.getRecords(targetCurrency);
-		ArrayList<Record> list2 = recordJdbcTemplate.getRecords(baseCurrency);
-		list = Util.evaluate(list1, list2);
-	}
-	else{
-		list = recordJdbcTemplate.getRecords(targetCurrency);
-	}
+	list = getResults(targetCurrency, baseCurrency, recordJdbcTemplate);
 	
 	ModelMap model = new ModelMap();
+	
+	setAttributes(listOfCurrencies, targetCurrency, baseCurrency, list, model);
+	
+	return new ModelAndView("result", "model", model);
+	
+}
+
+private void setAttributes(List<Currency> listOfCurrencies, String targetCurrency, String baseCurrency,
+		ArrayList<Record> list, ModelMap model) {
 	model.addAttribute("records", list);
 	model.addAttribute("targetCurrency", targetCurrency);
 	model.addAttribute("baseCurrency", baseCurrency);
@@ -110,16 +104,36 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	catch(JsonProcessingException e){
 		e.printStackTrace();
 	}
-	
-	return new ModelAndView("result", "model", model);
-	}
+}
 
-	private List<String> convert(List<Currency> listOfCurrencies) {
-		List<String> result = new ArrayList<String>();
-		for(Currency currency : listOfCurrencies) {
-			result.add(currency.toString());
-		}
-		return result;
+private ArrayList<Record> getResults(String targetCurrency, String baseCurrency,
+		RecordJdbcTemplate recordJdbcTemplate) {
+	ArrayList<Record> list;
+	if(baseCurrency.equals(targetCurrency)){
+		list = recordJdbcTemplate.getRecords("EUR");
+		list = Util.fillWithOnes(list);
 	}
+	else if(targetCurrency.equals("PLN")){
+		list = recordJdbcTemplate.getRecords(baseCurrency);
+		list = Util.inverseRates(list);
+	}
+	else if(!"PLN".equals(targetCurrency) && !"PLN".equals(baseCurrency)){
+		ArrayList<Record> list1 = recordJdbcTemplate.getRecords(targetCurrency);
+		ArrayList<Record> list2 = recordJdbcTemplate.getRecords(baseCurrency);
+		list = Util.evaluate(list1, list2);
+	}
+	else{
+		list = recordJdbcTemplate.getRecords(targetCurrency);
+	}
+	return list;
+}
+
+private List<String> convert(List<Currency> listOfCurrencies) {
+	List<String> result = new ArrayList<String>();
+	for(Currency currency : listOfCurrencies) {
+		result.add(currency.toString());
+	}
+	return result;
+}
 
 }
