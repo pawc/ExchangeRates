@@ -14,7 +14,7 @@ function validate(dateFrom, dateTo){
 		return false;
 	}
 	
-	if(dateOfFirstRecord >= until){
+	if(dateOfFirstRecord > until){
 		alert("not enough data");
 		return false;
 	}

@@ -135,6 +135,11 @@ private void setAttributes(List<Currency> listOfCurrencies, String targetCurrenc
 		min = min-(max-min)*0.1;
 		max = max+(max-min)*0.1;
 		
+		if(list.size()==1) {
+			min = min-1;
+			max = max+1;
+		}
+		
 		model.addAttribute("minVal", objectMapper.writeValueAsString(min));
 		model.addAttribute("maxVal", objectMapper.writeValueAsString(max));
 	} 
