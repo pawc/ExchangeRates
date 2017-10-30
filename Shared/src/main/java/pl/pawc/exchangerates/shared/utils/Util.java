@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import pl.pawc.exchangerates.shared.model.Currency;
 import pl.pawc.exchangerates.shared.model.Record;
@@ -86,6 +87,7 @@ public class Util {
 		Date since = null;
 		Date until = null;
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+		//format.setTimeZone(TimeZone.getTimeZone("UTC"));
 		
 		try {
 			if(dateFrom == null || dateFrom.equals("")) {
