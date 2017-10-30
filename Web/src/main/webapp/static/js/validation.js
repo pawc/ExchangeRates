@@ -18,5 +18,4 @@ function validate(dateFrom, dateTo){
 		alert("not enough data");
 		return false;
 	}
-
 }

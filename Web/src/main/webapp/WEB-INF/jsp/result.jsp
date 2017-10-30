@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ page contentType = "text/html; charset = UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -5,9 +6,23 @@
 	
 	<%@ page isELIgnored="false" %>
 	<link rel="stylesheet" type="text/css" href="/Web/static/css/main.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
 	<script type="text/javascript" src="/Web/static/js/validation.js"></script>
    	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+ 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+ 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<title>Exchange Rates Web Application</title>
+	
+	<script>
+	$( function() {
+	  $( "#dateFrom" ).datepicker({dateFormat: "yy-mm-dd"});  
+	} );
+	
+	$( function() {
+		  $( "#dateTo" ).datepicker({dateFormat: "yy-mm-dd"});  
+	} );
+	</script>
 	
 	<script type="text/javascript">
 		window.onload = function () {
@@ -72,9 +87,9 @@
 		</script>
 		</select>
 		
-		<input type="date" name="dateFrom" size="8" value="${model.dateFrom}">
+		<input type="text" name="dateFrom" id="dateFrom" value="${model.dateFrom}">
 		<b>-</b>
-		<input type="date" name="dateTo" size="8" value="${model.dateTo}">
+		<input type="text" name="dateTo" id="dateTo" value="${model.dateTo}">
 		
 		<input type="submit" value="plot" style="width: 100;"></td>
 			
