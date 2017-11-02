@@ -1,5 +1,6 @@
 package pl.pawc.exchangerates.web.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,13 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 			request.getSession().setAttribute("baseCurrency", paramBaseCurrency);
 		}
 		else{
-			return new ModelAndView("redirect:/result");
+			try {
+				request.getSession().setAttribute("targetCurrency", "EUR");
+				request.getSession().setAttribute("baseCurrency", "PLN");
+				response.sendError(400, "invalid req params. Restoring to defaults");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	else {
@@ -75,10 +82,21 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	String dateTo = null;
 	
 	if(paramDateFrom != null && paramDateTo !=null) {
-		dateFrom = paramDateFrom;
-		dateTo = paramDateTo;
-		request.getSession().setAttribute("dateFrom", dateFrom);
-		request.getSession().setAttribute("dateTo", dateTo);
+		if(Util.validateDate(paramDateFrom, paramDateTo)) {
+			dateFrom = paramDateFrom;
+			dateTo = paramDateTo;
+			request.getSession().setAttribute("dateFrom", dateFrom);
+			request.getSession().setAttribute("dateTo", dateTo);
+		}
+		else {
+			request.getSession().setAttribute("dateFrom", "");
+			request.getSession().setAttribute("dateTo", "");
+			try {
+				response.sendError(400, "invalid req params. Restoring to defaults");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	else {
 		if(request.getSession().getAttribute("dateFrom") != null) {
