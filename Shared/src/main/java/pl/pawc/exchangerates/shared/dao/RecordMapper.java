@@ -2,6 +2,8 @@ package pl.pawc.exchangerates.shared.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -16,7 +18,8 @@ public class RecordMapper implements RowMapper<Record>{
 		record.setBaseCurrency(resultSet.getString("baseCurrency"));
 		record.setTargetCurrency(resultSet.getString("targetCurrency"));
 		record.setExchangeRate(resultSet.getDouble("exchangeRate"));
-		record.setDate(resultSet.getDate("date"));
+		GregorianCalendar calendar = new GregorianCalendar(new Locale("pl"));
+		record.setDate(resultSet.getDate("date", calendar));
 		
 		return record;
 		
