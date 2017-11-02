@@ -23,8 +23,6 @@ import org.springframework.ui.ModelMap;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.commons.lang3.EnumUtils;
-
 @Controller
 @RequestMapping("/")
 public class WebController{
@@ -36,8 +34,6 @@ public class WebController{
 
 @RequestMapping("invert")
 public ModelAndView invert(HttpServletRequest request, HttpServletResponse response){
-	
-	ModelMap model = new ModelMap();
 	
 	String targetCurrency = (String) request.getSession().getAttribute("targetCurrency");
 	String baseCurrency = (String) request.getSession().getAttribute("baseCurrency");
@@ -55,11 +51,10 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	String paramDateFrom = request.getParameter("dateFrom");
 	String paramDateTo = request.getParameter("dateTo");
 	
-	List<Currency> listOfCurrencies = EnumUtils.getEnumList(Currency.class);
-	List<String> listOfCurrenciesString = Util.convertTo(listOfCurrencies);
+	List<String> currencies = Util.convertTo(Util.getCurrencies());
 
 	if(paramTargetCurrency != null || paramBaseCurrency != null){
-		if(listOfCurrenciesString.contains(paramTargetCurrency) && listOfCurrenciesString.contains(paramBaseCurrency)){
+		if(currencies.contains(paramTargetCurrency) && currencies.contains(paramBaseCurrency)){
 			request.getSession().setAttribute("targetCurrency", paramTargetCurrency);
 			request.getSession().setAttribute("baseCurrency", paramBaseCurrency);
 		}
@@ -82,7 +77,7 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	String dateTo = null;
 	
 	if(paramDateFrom != null && paramDateTo !=null) {
-		if(Util.validateDate(paramDateFrom, paramDateTo)) {
+		if(Util.validateDates(paramDateFrom, paramDateTo)) {
 			dateFrom = paramDateFrom;
 			dateTo = paramDateTo;
 			request.getSession().setAttribute("dateFrom", dateFrom);
@@ -114,13 +109,11 @@ public ModelAndView plot(HttpServletRequest request, HttpServletResponse respons
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
 	
-	ArrayList<Record> list = null;
-
-	list = getResults(targetCurrency, baseCurrency, recordJdbcTemplate);
+	ArrayList<Record> list = recordJdbcTemplate.getRecords(targetCurrency, baseCurrency);
 	
 	ModelMap model = new ModelMap();
 	
-	setAttributes(listOfCurrencies, targetCurrency, baseCurrency, dateFrom, dateTo, list, model);
+	setAttributes(Util.getCurrencies(), targetCurrency, baseCurrency, dateFrom, dateTo, list, model);
 	
 	return new ModelAndView("result", "model", model);
 	
@@ -137,7 +130,7 @@ private void setAttributes(List<Currency> listOfCurrencies, String targetCurrenc
 	
 	ObjectMapper objectMapper = new ObjectMapper();
 	
-	list = Util.removeRecordsOutsideDates(list, dateFrom, dateTo);
+	list = Util.removeRecordsBeyondDates(list, dateFrom, dateTo);
 	
 	list = Util.sortByRates(list);
 	
@@ -165,28 +158,6 @@ private void setAttributes(List<Currency> listOfCurrencies, String targetCurrenc
 		e.printStackTrace();
 	}
 
-}
-
-private ArrayList<Record> getResults(String targetCurrency, String baseCurrency,
-		RecordJdbcTemplate recordJdbcTemplate) {
-	ArrayList<Record> list;
-	if(baseCurrency.equals(targetCurrency)){
-		list = recordJdbcTemplate.getRecords("EUR");
-		list = Util.fillWithOnes(list);
-	}
-	else if(targetCurrency.equals("PLN")){
-		list = recordJdbcTemplate.getRecords(baseCurrency);
-		list = Util.inverseRates(list);
-	}
-	else if(!"PLN".equals(targetCurrency) && !"PLN".equals(baseCurrency)){
-		ArrayList<Record> list1 = recordJdbcTemplate.getRecords(targetCurrency);
-		ArrayList<Record> list2 = recordJdbcTemplate.getRecords(baseCurrency);
-		list = Util.evaluate(list1, list2);
-	}
-	else{
-		list = recordJdbcTemplate.getRecords(targetCurrency);
-	}
-	return list;
 }
 
 }

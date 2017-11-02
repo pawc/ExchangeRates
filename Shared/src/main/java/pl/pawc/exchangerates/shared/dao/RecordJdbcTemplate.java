@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import pl.pawc.exchangerates.shared.model.Record;
+import pl.pawc.exchangerates.shared.utils.Util;
 
 public class RecordJdbcTemplate implements RecordDAO{
 	
@@ -38,6 +39,27 @@ public class RecordJdbcTemplate implements RecordDAO{
 		
 	}
 
+	public ArrayList<Record> getRecords(String targetCurrency, String baseCurrency) {
+		ArrayList<Record> list;
+		if(baseCurrency.equals(targetCurrency)){
+			list = getRecords("EUR");
+			list = Util.fillWithOnes(list);
+		}
+		else if(targetCurrency.equals("PLN")){
+			list = getRecords(baseCurrency);
+			list = Util.inverseRates(list);
+		}
+		else if(!"PLN".equals(targetCurrency) && !"PLN".equals(baseCurrency)){
+			ArrayList<Record> list1 = getRecords(targetCurrency);
+			ArrayList<Record> list2 = getRecords(baseCurrency);
+			list = Util.evaluate(list1, list2);
+		}
+		else{
+			list = getRecords(targetCurrency);
+		}
+		return list;
+	}
+	
 	public ArrayList<Record> getRecords(String targetCurrency){
 		String SQL = "select * from records where targetCurrency='"+targetCurrency+"';";
 		ArrayList<Record> results = (ArrayList<Record>) jdbcTemplateObject.query(SQL, new RecordMapper()); 
