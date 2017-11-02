@@ -121,5 +121,19 @@ public class Util {
 		return boundedList;
 		
 	}
+
+	public static boolean validateDate(String paramDateFrom, String paramDateTo) {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+		
+		try {
+			Date since = format.parse(paramDateFrom);
+			Date until = format.parse(paramDateTo);
+		} catch (ParseException e) {
+			return false;
+		}
+		
+		return true;
+		
+	}
 	
 }

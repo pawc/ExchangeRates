@@ -7,7 +7,7 @@
 	<%@ page isELIgnored="false" %>
 	<link rel="stylesheet" type="text/css" href="/Web/static/css/main.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
+    <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
 	<script type="text/javascript" src="/Web/static/js/validation.js"></script>
    	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -17,6 +17,16 @@
 	<script>
 	$( function() {
 	  $( "#dateFrom" ).datepicker({dateFormat: "yy-mm-dd"});  
+	  $( "#dateFrom" ).blur(function(){
+		  val = $(this).val();
+		  temp = Date.parse(val);
+		  if(isNaN(temp)==true && val!==''){
+			  alert("error")
+		  }
+		  else{
+			  console.log(temp)
+		  }
+	  })
 	} );
 	
 	$( function() {
