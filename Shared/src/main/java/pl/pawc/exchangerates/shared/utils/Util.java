@@ -9,7 +9,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
+
+import org.apache.commons.lang3.EnumUtils;
 
 import pl.pawc.exchangerates.shared.model.Currency;
 import pl.pawc.exchangerates.shared.model.Record;
@@ -83,11 +84,16 @@ public class Util {
 		return result;
 	}
 	
-	public static ArrayList<Record> removeRecordsOutsideDates(ArrayList<Record> list, String dateFrom, String dateTo){
+	public static List<Currency> getCurrencies(){
+	List<Currency> listOfCurrencies = EnumUtils.getEnumList(Currency.class);
+	
+	return listOfCurrencies;
+	}
+	
+	public static ArrayList<Record> removeRecordsBeyondDates(ArrayList<Record> list, String dateFrom, String dateTo){
 		Date since = null;
 		Date until = null;
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-		//format.setTimeZone(TimeZone.getTimeZone("UTC"));
 		
 		try {
 			if(dateFrom == null || dateFrom.equals("")) {
@@ -122,7 +128,7 @@ public class Util {
 		
 	}
 
-	public static boolean validateDate(String paramDateFrom, String paramDateTo) {
+	public static boolean validateDates(String paramDateFrom, String paramDateTo) {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 		
 		try {
