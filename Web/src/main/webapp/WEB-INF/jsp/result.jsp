@@ -17,16 +17,6 @@
 	<script>
 	$( function() {
 	  $( "#dateFrom" ).datepicker({dateFormat: "yy-mm-dd"});  
-	  $( "#dateFrom" ).blur(function(){
-		  val = $(this).val();
-		  temp = Date.parse(val);
-		  if(isNaN(temp)==true && val!==''){
-			  alert("error")
-		  }
-		  else{
-			  console.log(temp)
-		  }
-	  })
 	} );
 	
 	$( function() {
