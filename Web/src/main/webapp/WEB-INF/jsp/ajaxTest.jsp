@@ -28,22 +28,29 @@
 		data : "targetCurrency=" + targetCurrency,
 		  
 			success : function(response) {  
+			
 			var rec = response;
 			generatedDataPoints = [];
+			len = rec.length;
+			min = rec[len-2].exchangeRate;
+			max = rec[len-1].exchangeRate;
+			span = max-min;
+			min = min-0.3*span;
+			max = max+0.3*span;
 			
-			for(var i = 0, len = rec.length; i < len; i++){
+			for(var i = 0; i < len-3; i++){
 				generatedDataPoints.push({
 					y : rec[i].exchangeRate,
 					label : rec[i].date
 				})
 				
 			}
-				 console.log(generatedDataPoints);
+				 //console.log(generatedDataPoints);
 				 //$("#result").html(response);
 				 
 			var chart = new CanvasJS.Chart("chartContainer", {
 				title:{
-					text: "pln/eur"       
+					text: rec[0].targetCurrency+"/"+rec[0].baseCurrency       
 				},
 				data: [              
 				{
@@ -51,10 +58,14 @@
 					dataPoints: generatedDataPoints
 				}
 				],
+				axisY:{
+			    	minimum: min,
+			    	maximum: max,
+				 },
 				backgroundColor: "#EEEEEC"
 			});
 			chart.render();
-			},  
+			}, 
 			
 		error : function(e) {  
 			alert('Error: ' + e);   

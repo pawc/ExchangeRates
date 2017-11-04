@@ -42,6 +42,22 @@ public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse res
 	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
 	
 	ArrayList<Record> list = recordJdbcTemplate.getRecords(targetCurrency, "PLN");
+	
+	list = Util.sortByRates(list);
+	
+	double min = list.get(0).getExchangeRate();
+	double max = list.get(list.size()-1).getExchangeRate();
+	
+	list = Util.sortByDates(list);
+	
+	Record recordMin = new Record();
+	recordMin.setExchangeRate(min);
+	
+	Record recordMax = new Record();
+	recordMax.setExchangeRate(max);
+	
+	list.add(recordMin);
+	list.add(recordMax);
   
 	ObjectMapper objectMapper = new ObjectMapper();
 	
