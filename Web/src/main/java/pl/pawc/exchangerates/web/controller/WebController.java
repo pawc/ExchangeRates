@@ -31,7 +31,19 @@ public class WebController{
 	
 @RequestMapping("/ajaxTest")
 public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse response){		
-	return new ModelAndView("ajaxTest");
+	
+	ModelMap model = new ModelMap();
+	
+	List<Currency> listOfCurrencies = Util.getCurrencies();
+	ObjectMapper objectMapper = new ObjectMapper();
+	
+	try {
+		model.addAttribute("currencies", objectMapper.writeValueAsString(listOfCurrencies));
+	} catch (JsonProcessingException e) {
+		e.printStackTrace();
+	}
+	
+	return new ModelAndView("ajaxTest", "model", model);
 }
 
  @RequestMapping("/ajax")  
