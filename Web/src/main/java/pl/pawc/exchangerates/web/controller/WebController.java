@@ -61,7 +61,7 @@ public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse res
 		e.printStackTrace();
 	}
   
-	return "tekst";  
+	return str;  
   
 }  
 	
