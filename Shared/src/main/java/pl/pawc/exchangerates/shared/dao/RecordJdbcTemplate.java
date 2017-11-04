@@ -39,29 +39,30 @@ public class RecordJdbcTemplate implements RecordDAO{
 		
 	}
 
-	public ArrayList<Record> getRecords(String targetCurrency, String baseCurrency) {
+	public ArrayList<Record> getRecords(String targetCurrency, String baseCurrency, String dateStart, String dateEnd) {
 		ArrayList<Record> list;
 		if(baseCurrency.equals(targetCurrency)){
-			list = getRecords("EUR");
+			list = getRecords("EUR", dateStart, dateEnd);
 			list = Util.fillWithOnes(list);
 		}
 		else if(targetCurrency.equals("PLN")){
-			list = getRecords(baseCurrency);
+			list = getRecords(baseCurrency, dateStart, dateEnd);
 			list = Util.inverseRates(list);
 		}
 		else if(!"PLN".equals(targetCurrency) && !"PLN".equals(baseCurrency)){
-			ArrayList<Record> list1 = getRecords(targetCurrency);
-			ArrayList<Record> list2 = getRecords(baseCurrency);
+			ArrayList<Record> list1 = getRecords(targetCurrency, dateStart, dateEnd);
+			ArrayList<Record> list2 = getRecords(baseCurrency, dateStart, dateEnd);
 			list = Util.evaluate(list1, list2);
 		}
 		else{
-			list = getRecords(targetCurrency);
+			list = getRecords(targetCurrency, dateStart, dateEnd);
 		}
 		return list;
 	}
 	
-	public ArrayList<Record> getRecords(String targetCurrency){
-		String SQL = "select * from records where targetCurrency='"+targetCurrency+"';";
+	public ArrayList<Record> getRecords(String targetCurrency, String dateStart, String dateEnd){
+		String SQL = "select * from records where targetCurrency='"+targetCurrency+"' "
+				+ "and date between '"+dateStart+"' and '"+dateEnd+"';";
 		ArrayList<Record> results = (ArrayList<Record>) jdbcTemplateObject.query(SQL, new RecordMapper()); 
 		return results;
 	}
