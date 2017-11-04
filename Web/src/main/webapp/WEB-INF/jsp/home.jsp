@@ -8,28 +8,49 @@
 	<%@ page isELIgnored="false" %>
 	<link rel="stylesheet" type="text/css" href="/Web/static/css/main.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<script type="text/javascript" src="/Web/static/js/validation.js"></script>
+	
    	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
  	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
 </head>  
 <body>  
 	<center>  
-	<b>Exchange Rates</b><br />  
+	<b>Exchange Rates</b><br /> 
+ 
 	<script type="text/javascript"> 
 	
+	function validateDates(dateFrom, dateTo){
+		
+		var since = new Date(dateFrom);
+		var until = new Date(dateTo);
+		var dateOfFirstRecord = new Date("2017-10-20");
+		
+		if(since > until){
+			alert("invalid date input");
+			return false;
+		}
+		
+		if(since > new Date()){
+			alert("invalid date input");
+			return false;
+		}
+		
+		if(dateOfFirstRecord > until){
+			alert("not enough data");
+			return false;
+		}
+	}
+	
 	$( function() {
-		  $( "#dateFrom" ).datepicker({
-			  dateFormat: "yy-mm-dd",
-			  startDate: '2017-10-20'
-		  });  
+		$( "#dateFrom" ).datepicker({
+		 dateFormat: "yy-mm-dd",
+		});  
 	});
 		
-	$( function() {
-		  $( "#dateTo" ).datepicker({
-			  dateFormat: "yy-mm-dd",
-			  setDate: '2017-10-27'
-		  });  
+	$(function() {
+		$( "#dateTo" ).datepicker({
+		 dateFormat: "yy-mm-dd",
+		});  
 	});
 	
 	$(document).ready(function(){
@@ -58,54 +79,53 @@
 		dataType: "json",
 		data : "targetCurrency=" + targetCurrency + "&baseCurrency=" + baseCurrency +"&dateFrom=" + dateFrom +"&dateTo=" + dateTo,
 		  
-			success : function(response) {  
+		success : function(response) {  
+		
+		var rec = response;
+		generatedDataPoints = [];
+		len = rec.length;
+		min = rec[len-2].exchangeRate;
+		max = rec[len-1].exchangeRate;
+		span = max-min;
+		min = min-0.1*span;
+		max = max+0.1*span;
+		
+		for(var i = 0; i <= len-3; i++){
+			generatedDataPoints.push({
+				y : rec[i].exchangeRate,
+				label : rec[i].date
+			})
 			
-			var rec = response;
-			generatedDataPoints = [];
-			len = rec.length;
-			min = rec[len-2].exchangeRate;
-			max = rec[len-1].exchangeRate;
-			span = max-min;
-			min = min-0.1*span;
-			max = max+0.1*span;
-			
-			for(var i = 0; i <= len-3; i++){
-				generatedDataPoints.push({
-					y : rec[i].exchangeRate,
-					label : rec[i].date
-				})
-				
+		}
+			 
+		var chart = new CanvasJS.Chart("chartContainer", {
+			title:{
+				text: rec[0].targetCurrency+"/"+rec[0].baseCurrency       
+			},
+			data: [              
+			{
+				type: "line",
+				dataPoints: generatedDataPoints
 			}
-				 //console.log(generatedDataPoints);
-				 //$("#result").html(response);
-				 
-			var chart = new CanvasJS.Chart("chartContainer", {
-				title:{
-					text: rec[0].targetCurrency+"/"+rec[0].baseCurrency       
-				},
-				data: [              
-				{
-					type: "line",
-					dataPoints: generatedDataPoints
-				}
-				],
-				axisY:{
-			    	minimum: min,
-			    	maximum: max,
-				 },
-				backgroundColor: "#EEEEEC"
-			});
-			chart.render();
-			}, 
+			],
+			axisY:{
+		    	minimum: min,
+		    	maximum: max,
+			 },
+			backgroundColor: "#EEEEEC"
+		});
+		chart.render();
+		}, 
 			
 		error : function(e) {  
-			alert('Error: ' + e);   
+			console.log(e);
+			//alert('Error: ' + e);   
 		}  
 		});  
 	}  
 	</script>
 	
-    <form method="get" onsubmit="return validate(dateFrom.value, dateTo.value)">  
+    <form method="get" onsubmit="return validateDates(dateFrom.value, dateTo.value)">  
     <select name="targetCurrency" id="targetCurrency" selected="EUR">
 		<script type="text/javascript">
 			var currencies = ${model.currencies};
@@ -130,11 +150,12 @@
 		</script>
 	</select>
 	
-	<input type="text" name="dateFrom" id="dateFrom">
-	<b>-</b>
-	<input type="text" name="dateTo" id="dateTo">
+	<input type="button" id="reverseButton" value="reverse" /> 
 	
-    <input type="button" id="reverseButton" value="reverse" /> 
+	<input type="text" name="dateFrom" id="dateFrom" value='2017-10-20'>
+	<b>-</b>
+	<input type="text" name="dateTo" id="dateTo" value='2017-12-31'>
+	
 	<input type="button" value="plot" onclick="doAjaxPost();" />  
     </form>
     

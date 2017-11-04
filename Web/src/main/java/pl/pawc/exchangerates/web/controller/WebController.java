@@ -26,10 +26,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-@RequestMapping("/")
+//@RequestMapping("/")
 public class WebController{
 	
-@RequestMapping("/ajaxTest")
+@RequestMapping("/")
 public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse response){		
 	
 	ModelMap model = new ModelMap();
@@ -43,34 +43,40 @@ public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse res
 		e.printStackTrace();
 	}
 	
-	return new ModelAndView("ajaxTest", "model", model);
+	return new ModelAndView("home", "model", model);
 }
 
  @RequestMapping("/ajax")  
  public @ResponseBody  
  String ajax( @RequestParam(value = "targetCurrency") String targetCurrency,
 		@RequestParam(value = "baseCurrency") String baseCurrency,
-		@RequestParam(value = "dateFrom") String dateFrom,
-		@RequestParam(value = "dateTo") String dateTo
-		 ) { 
+		@RequestParam(value = "dateFrom") String dateStart,
+		@RequestParam(value = "dateTo") String dateEnd,
+		HttpServletResponse response) { 
   
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
 	
-	ArrayList<Record> list = recordJdbcTemplate.getRecords(targetCurrency, baseCurrency, dateFrom, dateTo);
+	List<Currency> listOfCurrencies = Util.getCurrencies();
 	
-	list = Util.sortByRates(list);
+	if(!Util.validateParams(targetCurrency, baseCurrency, dateStart, dateEnd)) {
+		try {
+			response.sendError(400, "Invalid request parameters");
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	double min = list.get(0).getExchangeRate();
-	double max = list.get(list.size()-1).getExchangeRate();
+	ArrayList<Record> list = recordJdbcTemplate.getRecords(targetCurrency, baseCurrency, dateStart, dateEnd);
 	
-	list = Util.sortByDates(list);
-	
+	double[] minMax = Util.getMinMax(list);
+		
 	Record recordMin = new Record();
-	recordMin.setExchangeRate(min);
+	recordMin.setExchangeRate(minMax[0]);
 	
 	Record recordMax = new Record();
-	recordMax.setExchangeRate(max);
+	recordMax.setExchangeRate(minMax[1]);
 	
 	list.add(recordMin);
 	list.add(recordMax);
@@ -88,9 +94,4 @@ public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse res
   
 }  
 	
-@RequestMapping("/")
-	public ModelAndView redirect(HttpServletRequest request, HttpServletResponse response){		
-		return new ModelAndView("redirect:/ajaxTest");
-	}
-
 }
