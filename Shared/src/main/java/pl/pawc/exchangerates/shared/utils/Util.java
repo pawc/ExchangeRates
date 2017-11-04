@@ -84,47 +84,21 @@ public class Util {
 		return result;
 	}
 	
+	public static boolean validateParams(String targetCurrency, String baseCurrency, String dateStart, String dateEnd) {
+		return (validateCurrencies(targetCurrency, baseCurrency) && validateDates(dateStart, dateEnd));
+	}
+	
 	public static List<Currency> getCurrencies(){
 	List<Currency> listOfCurrencies = EnumUtils.getEnumList(Currency.class);
 	
 	return listOfCurrencies;
 	}
 	
-	public static ArrayList<Record> removeRecordsBeyondDates(ArrayList<Record> list, String dateFrom, String dateTo){
-		Date since = null;
-		Date until = null;
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-		
-		try {
-			if(dateFrom == null || dateFrom.equals("")) {
-				since = new Date(Long.MIN_VALUE);
-			}
-			else {
-				since = format.parse(dateFrom);
-			}
-				
-			if(dateTo == null || dateTo.equals("")) {
-				until = new Date(Long.MAX_VALUE);
-			}
-			else {
-				until = format.parse(dateTo);
-			}
-		} 
-		catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		ArrayList<Record> boundedList = new ArrayList<Record>();
-		
-		for(Record record : list) {
-			if(record.getDate().compareTo(since) >= 0 && record.getDate().compareTo(until) <= 0 ) boundedList.add(record); 
-		}
-		
-		for(Record record : boundedList) {
-			System.out.println(record.getDate().toString());
-		}
-		
-		return boundedList;
+	public static boolean validateCurrencies(String targetCurrency, String baseCurrency){
+		List<Currency> listOfCurrencies = getCurrencies();
+		Currency target = Currency.valueOf(targetCurrency);
+		Currency base = Currency.valueOf(baseCurrency);
+		return (listOfCurrencies.contains(target) && listOfCurrencies.contains(base));
 		
 	}
 
@@ -139,6 +113,21 @@ public class Util {
 		}
 		
 		return true;
+		
+	}
+
+	public static double[] getMinMax(ArrayList<Record> list) {
+
+		list = Util.sortByRates(list);
+		
+		double min = list.get(0).getExchangeRate();
+		double max = list.get(list.size()-1).getExchangeRate();
+		
+		list = Util.sortByDates(list);
+		
+		double[] minMax = {min, max};
+		
+		return minMax;
 		
 	}
 	
