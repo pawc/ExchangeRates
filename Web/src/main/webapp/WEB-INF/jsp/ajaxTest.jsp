@@ -19,18 +19,13 @@
 	<script type="text/javascript">  
 	function doAjaxPost() {  
      
-	var name = $('#name').val();  
-	var gender = $('#gender').val();  
-	var email = $('#email').val();  
-	var phone = $('#phone').val();  
-	var city = $('#city').val();  
+	var targetCurrency = $('#targetCurrency').val();  
 	
 	$.ajax({  
 		type : "Get",   
 		url : "ajax.html",   
 		dataType: "json",
-		data : "name=" + name + "&gender=" + gender + "&email="  
-		  + email + "&phone=" + phone + "&city=" + city,  
+		data : "targetCurrency=" + targetCurrency,
 		  
 			success : function(response) {  
 			var rec = response;
@@ -69,6 +64,7 @@
 	</script>  
 	<div id="form">  
     <form method="get">  
+    <input type="text" id="targetCurrency"/>
 	<input type="button" value="plot" onclick="doAjaxPost();" />  
     </form>  
     </div>
