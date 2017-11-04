@@ -48,12 +48,14 @@ public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse res
 
  @RequestMapping("/ajax")  
  public @ResponseBody  
- String hello( @RequestParam(value = "targetCurrency") String targetCurrency) { 
+ String ajax( @RequestParam(value = "targetCurrency") String targetCurrency,
+		@RequestParam(value = "baseCurrency") String baseCurrency
+		 ) { 
   
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
 	
-	ArrayList<Record> list = recordJdbcTemplate.getRecords(targetCurrency, "PLN");
+	ArrayList<Record> list = recordJdbcTemplate.getRecords(targetCurrency, baseCurrency);
 	
 	list = Util.sortByRates(list);
 	

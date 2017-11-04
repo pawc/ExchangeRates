@@ -15,17 +15,18 @@
 </head>  
 <body>  
 	<center>  
-	<b>Exchange Rates Web App</b><br />  
+	<b>Exchange Rates</b><br />  
 	<script type="text/javascript">  
 	function doAjaxPost() {  
      
-	var targetCurrency = $('#targetCurrency').val();  
+	var targetCurrency = $('#targetCurrency').val(); 
+	var baseCurrency = $('#baseCurrency').val();
 	
 	$.ajax({  
 		type : "Get",   
 		url : "ajax.html",   
 		dataType: "json",
-		data : "targetCurrency=" + targetCurrency,
+		data : "targetCurrency=" + targetCurrency + "&baseCurrency=" + baseCurrency,
 		  
 			success : function(response) {  
 			
@@ -35,8 +36,8 @@
 			min = rec[len-2].exchangeRate;
 			max = rec[len-1].exchangeRate;
 			span = max-min;
-			min = min-0.3*span;
-			max = max+0.3*span;
+			min = min-0.1*span;
+			max = max+0.1*span;
 			
 			for(var i = 0; i < len-3; i++){
 				generatedDataPoints.push({
@@ -75,14 +76,26 @@
 	</script>  
 	<div id="form">  
     <form method="get">  
-    <select name="targetCurrency" id="targetCurrency">
+    <select name="targetCurrency" id="targetCurrency" selected="EUR">
 		<script type="text/javascript">
 			var currencies = ${model.currencies};
 			for(var i = 0, len = currencies.length; i < len; i++){
 				currency = currencies[i];
-				selection = "";
-				if("${model.targetCurrency}".valueOf() == currency.valueOf()) selection = "selected";
-				document.write("<option value="+currency+" "+selection+">"+currency+"</option>");			
+				selected = "";
+				if(currency == "EUR") selected = "selected";
+				document.write("<option value="+currency+" "+selected+">"+currency+"</option>");			
+			}
+		</script>
+	</select>
+	
+    <select name="baseCurrency" id="baseCurrency" selected="PLN">
+		<script type="text/javascript">
+			var currencies = ${model.currencies};
+			for(var i = 0, len = currencies.length; i < len; i++){
+				currency = currencies[i];
+				selected = "";
+				if(currency == "PLN") selected = "selected";
+				document.write("<option value="+currency+" "+selected+">"+currency+"</option>");			
 			}
 		</script>
 	</select>
