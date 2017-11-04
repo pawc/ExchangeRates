@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class WebController{
 	
 @RequestMapping("/")
-public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse response){		
+public ModelAndView home(HttpServletRequest request, HttpServletResponse response){		
 	
 	ModelMap model = new ModelMap();
 	
@@ -48,16 +48,14 @@ public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse res
 
  @RequestMapping("/ajax")  
  public @ResponseBody  
- String ajax( @RequestParam(value = "targetCurrency") String targetCurrency,
+ String ajax(@RequestParam(value = "targetCurrency") String targetCurrency,
 		@RequestParam(value = "baseCurrency") String baseCurrency,
 		@RequestParam(value = "dateFrom") String dateStart,
 		@RequestParam(value = "dateTo") String dateEnd,
-		HttpServletResponse response) { 
+		HttpServletResponse response){ 
   
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
-	
-	List<Currency> listOfCurrencies = Util.getCurrencies();
 	
 	if(!Util.validateParams(targetCurrency, baseCurrency, dateStart, dateEnd)) {
 		try {

@@ -4,11 +4,12 @@
 <html>  
 <head>  
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">  
-	<title>Insert title here</title>  
+	<title>Exchange Rates</title>  
 	<%@ page isELIgnored="false" %>
 	<link rel="stylesheet" type="text/css" href="/Web/static/css/main.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	
+	<script type="text/javascript" src="/Web/static/js/validation.js"></script>
+	<script type="text/javascript" src="/Web/static/js/date.format.js"></script>
    	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
  	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
@@ -19,40 +20,15 @@
  
 	<script type="text/javascript"> 
 	
-	function validateDates(dateFrom, dateTo){
-		
-		var since = new Date(dateFrom);
-		var until = new Date(dateTo);
-		var dateOfFirstRecord = new Date("2017-10-20");
-		
-		if(since > until){
-			alert("invalid date input");
-			return false;
-		}
-		
-		if(since > new Date()){
-			alert("invalid date input");
-			return false;
-		}
-		
-		if(dateOfFirstRecord > until){
-			alert("not enough data");
-			return false;
-		}
-	}
-	
 	$( function() {
-		$( "#dateFrom" ).datepicker({
-		 dateFormat: "yy-mm-dd",
+		$("#dateFrom").datepicker({
+			dateFormat: "yy-mm-dd",
 		});  
+		$("#dateTo").datepicker({
+			dateFormat: "yy-mm-dd",
+		}); 
 	});
 		
-	$(function() {
-		$( "#dateTo" ).datepicker({
-		 dateFormat: "yy-mm-dd",
-		});  
-	});
-	
 	$(document).ready(function(){
 		$("#reverseButton").click(function(){
 			
@@ -73,12 +49,14 @@
 	var dateFrom = $('#dateFrom').val();
 	var dateTo = $('#dateTo').val();
 	
+	if(!validateDates(dateFrom, dateTo)) return;
+	
 	$.ajax({  
 		type : "Get",   
 		url : "ajax.html",   
 		dataType: "json",
 		data : "targetCurrency=" + targetCurrency + "&baseCurrency=" + baseCurrency +"&dateFrom=" + dateFrom +"&dateTo=" + dateTo,
-		  
+		
 		success : function(response) {  
 		
 		var rec = response;
@@ -124,8 +102,8 @@
 		});  
 	}  
 	</script>
-	
-    <form method="get" onsubmit="return validateDates(dateFrom.value, dateTo.value)">  
+		
+    <form method="get">  
     <select name="targetCurrency" id="targetCurrency" selected="EUR">
 		<script type="text/javascript">
 			var currencies = ${model.currencies};
@@ -152,9 +130,15 @@
 	
 	<input type="button" id="reverseButton" value="reverse" /> 
 	
-	<input type="text" name="dateFrom" id="dateFrom" value='2017-10-20'>
+	<input type="text" name="dateFrom" id="dateFrom" value='2017-10-20'/>
 	<b>-</b>
-	<input type="text" name="dateTo" id="dateTo" value='2017-12-31'>
+	
+	<script type="text/javascript">
+	var today = new Date();
+	var format = dateFormat(today, "yyyy-mm-dd");
+	document.write("<input type='text' name='dateTo' id='dateTo' value='"+format+"'/>");	
+	</script>
+	
 	
 	<input type="button" value="plot" onclick="doAjaxPost();" />  
     </form>
