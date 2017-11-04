@@ -15,7 +15,7 @@
 </head>  
 <body>  
 	<center>  
-	<b>Plot results </b><br />  
+	<b>Exchange Rates Web App</b><br />  
 	<script type="text/javascript">  
 	function doAjaxPost() {  
      
@@ -75,7 +75,18 @@
 	</script>  
 	<div id="form">  
     <form method="get">  
-    <input type="text" id="targetCurrency"/>
+    <select name="targetCurrency" id="targetCurrency">
+		<script type="text/javascript">
+			var currencies = ${model.currencies};
+			for(var i = 0, len = currencies.length; i < len; i++){
+				currency = currencies[i];
+				selection = "";
+				if("${model.targetCurrency}".valueOf() == currency.valueOf()) selection = "selected";
+				document.write("<option value="+currency+" "+selection+">"+currency+"</option>");			
+			}
+		</script>
+	</select>
+    
 	<input type="button" value="plot" onclick="doAjaxPost();" />  
     </form>  
     </div>
