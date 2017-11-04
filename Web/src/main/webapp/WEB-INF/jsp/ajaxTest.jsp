@@ -25,18 +25,45 @@
 	var phone = $('#phone').val();  
 	var city = $('#city').val();  
 	
-		$.ajax({  
-		 type : "Get",   
-		 url : "ajax.html",   
-		 data : "name=" + name + "&gender=" + gender + "&email="  
-		   + email + "&phone=" + phone + "&city=" + city,  
-		 success : function(response) {  
-			 console.log(response);
-			 $("#result").html(response);
-		 },  
-		 error : function(e) {  
-		 	alert('Error: ' + e);   
-		 }  
+	$.ajax({  
+		type : "Get",   
+		url : "ajax.html",   
+		dataType: "json",
+		data : "name=" + name + "&gender=" + gender + "&email="  
+		  + email + "&phone=" + phone + "&city=" + city,  
+		  
+			success : function(response) {  
+			var rec = response;
+			generatedDataPoints = [];
+			
+			for(var i = 0, len = rec.length; i < len; i++){
+				generatedDataPoints.push({
+					y : rec[i].exchangeRate,
+					label : rec[i].date
+				})
+				
+			}
+				 console.log(generatedDataPoints);
+				 //$("#result").html(response);
+				 
+			var chart = new CanvasJS.Chart("chartContainer", {
+				title:{
+					text: "pln/eur"       
+				},
+				data: [              
+				{
+					type: "line",
+					dataPoints: generatedDataPoints
+				}
+				],
+				backgroundColor: "#EEEEEC"
+			});
+			chart.render();
+			},  
+			
+		error : function(e) {  
+			alert('Error: ' + e);   
+		}  
 		});  
 	}  
 	</script>  
@@ -44,12 +71,9 @@
     <form method="get">  
 	<input type="button" value="plot" onclick="doAjaxPost();" />  
     </form>  
-   
-	</div>
-	
-	<div id="result">
-	
-	</div>  
+    </div>
+    
+	<div id="chartContainer" style="height: 400px; width: 100%;"></div>
   
 	</center>  
 </body>  
