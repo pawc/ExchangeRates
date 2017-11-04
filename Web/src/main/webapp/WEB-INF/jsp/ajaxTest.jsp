@@ -16,7 +16,20 @@
 <body>  
 	<center>  
 	<b>Exchange Rates</b><br />  
-	<script type="text/javascript">  
+	<script type="text/javascript"> 
+	
+	$(document).ready(function(){
+		$("#reverseButton").click(function(){
+			
+			var targetCurrency = $('#targetCurrency').val(); 
+			var baseCurrency = $('#baseCurrency').val();
+			
+			$("#targetCurrency").val(baseCurrency);
+			$("#baseCurrency").val(targetCurrency);
+			
+		});
+	});
+
 	function doAjaxPost() {  
      
 	var targetCurrency = $('#targetCurrency').val(); 
@@ -39,7 +52,7 @@
 			min = min-0.1*span;
 			max = max+0.1*span;
 			
-			for(var i = 0; i < len-3; i++){
+			for(var i = 0; i <= len-3; i++){
 				generatedDataPoints.push({
 					y : rec[i].exchangeRate,
 					label : rec[i].date
@@ -73,8 +86,7 @@
 		}  
 		});  
 	}  
-	</script>  
-	<div id="form">  
+	</script>
     <form method="get">  
     <select name="targetCurrency" id="targetCurrency" selected="EUR">
 		<script type="text/javascript">
@@ -99,10 +111,9 @@
 			}
 		</script>
 	</select>
-    
+    <input type="button" id="reverseButton" value="reverse" /> 
 	<input type="button" value="plot" onclick="doAjaxPost();" />  
-    </form>  
-    </div>
+    </form>
     
 	<div id="chartContainer" style="height: 400px; width: 100%;"></div>
   
