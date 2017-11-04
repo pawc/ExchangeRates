@@ -36,21 +36,12 @@ public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse res
 
  @RequestMapping("/ajax")  
  public @ResponseBody  
- String hello(@RequestParam(value = "name") String name,  
-   @RequestParam(value = "gender") String gender,  
-   @RequestParam(value = "email") String email,  
-   @RequestParam(value = "phone") String phone,  
-   @RequestParam(value = "city") String city) {  
-	System.out.println(name);  
-	System.out.println(gender);  
-	System.out.println(email);  
-	System.out.println(phone);  
-	System.out.println(city);  
+ String hello( @RequestParam(value = "targetCurrency") String targetCurrency) { 
   
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
 	
-	ArrayList<Record> list = recordJdbcTemplate.getRecords("EUR", "PLN");
+	ArrayList<Record> list = recordJdbcTemplate.getRecords(targetCurrency, "PLN");
   
 	ObjectMapper objectMapper = new ObjectMapper();
 	
