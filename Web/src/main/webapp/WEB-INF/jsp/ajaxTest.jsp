@@ -18,6 +18,20 @@
 	<b>Exchange Rates</b><br />  
 	<script type="text/javascript"> 
 	
+	$( function() {
+		  $( "#dateFrom" ).datepicker({
+			  dateFormat: "yy-mm-dd",
+			  startDate: '2017-10-20'
+		  });  
+	});
+		
+	$( function() {
+		  $( "#dateTo" ).datepicker({
+			  dateFormat: "yy-mm-dd",
+			  setDate: '2017-10-27'
+		  });  
+	});
+	
 	$(document).ready(function(){
 		$("#reverseButton").click(function(){
 			
@@ -34,12 +48,15 @@
      
 	var targetCurrency = $('#targetCurrency').val(); 
 	var baseCurrency = $('#baseCurrency').val();
+
+	var dateFrom = $('#dateFrom').val();
+	var dateTo = $('#dateTo').val();
 	
 	$.ajax({  
 		type : "Get",   
 		url : "ajax.html",   
 		dataType: "json",
-		data : "targetCurrency=" + targetCurrency + "&baseCurrency=" + baseCurrency,
+		data : "targetCurrency=" + targetCurrency + "&baseCurrency=" + baseCurrency +"&dateFrom=" + dateFrom +"&dateTo=" + dateTo,
 		  
 			success : function(response) {  
 			
@@ -87,7 +104,8 @@
 		});  
 	}  
 	</script>
-    <form method="get">  
+	
+    <form method="get" onsubmit="return validate(dateFrom.value, dateTo.value)">  
     <select name="targetCurrency" id="targetCurrency" selected="EUR">
 		<script type="text/javascript">
 			var currencies = ${model.currencies};
@@ -111,6 +129,11 @@
 			}
 		</script>
 	</select>
+	
+	<input type="text" name="dateFrom" id="dateFrom">
+	<b>-</b>
+	<input type="text" name="dateTo" id="dateTo">
+	
     <input type="button" id="reverseButton" value="reverse" /> 
 	<input type="button" value="plot" onclick="doAjaxPost();" />  
     </form>

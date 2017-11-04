@@ -11,7 +11,7 @@ public interface RecordDAO {
 	public void setDataSource(DataSource dataSource);
 	public void insert(Record record);
 	public void insert(ArrayList<Record> records);
-	public ArrayList<Record> getRecords(String targetCurrency);
-	public ArrayList<Record> getRecords(String targetCurrency, String baseCurrency);
+	public ArrayList<Record> getRecords(String targetCurrency, String dateStart, String dateEnd);
+	public ArrayList<Record> getRecords(String targetCurrency, String baseCurrency, String dateStart, String dateEnd);
 	
 }
