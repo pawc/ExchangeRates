@@ -11,6 +11,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import pl.pawc.exchangerates.shared.dao.RecordJdbcTemplate;
@@ -26,6 +28,42 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 @RequestMapping("/")
 public class WebController{
+	
+@RequestMapping("/ajaxTest")
+public ModelAndView ajaxTest(HttpServletRequest request, HttpServletResponse response){		
+	return new ModelAndView("ajaxTest");
+}
+
+ @RequestMapping("/ajax")  
+ public @ResponseBody  
+ String hello(@RequestParam(value = "name") String name,  
+   @RequestParam(value = "gender") String gender,  
+   @RequestParam(value = "email") String email,  
+   @RequestParam(value = "phone") String phone,  
+   @RequestParam(value = "city") String city) {  
+	System.out.println(name);  
+	System.out.println(gender);  
+	System.out.println(email);  
+	System.out.println(phone);  
+	System.out.println(city);  
+  
+	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+	RecordJdbcTemplate recordJdbcTemplate = (RecordJdbcTemplate) context.getBean("recordJdbcTemplate");
+	
+	ArrayList<Record> list = recordJdbcTemplate.getRecords("EUR", "PLN");
+  
+	ObjectMapper objectMapper = new ObjectMapper();
+	
+	String str = null;
+	try{
+		str = objectMapper.writeValueAsString(list);
+	} catch (JsonProcessingException e){
+		e.printStackTrace();
+	}
+  
+	return "tekst";  
+  
+}  
 	
 @RequestMapping("/")
 	public ModelAndView redirect(HttpServletRequest request, HttpServletResponse response){		
