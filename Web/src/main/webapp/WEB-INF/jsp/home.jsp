@@ -13,6 +13,7 @@
    	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
  	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
+ 	<script type="text/javascript" src="/Web/static/js/select.js"></script>
 </head>  
 <body>  
 	<center>  
@@ -96,35 +97,22 @@
 		}, 
 			
 		error : function(e) {  
-			console.log(e);
-			//alert('Error: ' + e);   
+			console.log(e);   
 		}  
 		});  
 	}  
 	</script>
 		
     <form method="get">  
-    <select name="targetCurrency" id="targetCurrency" selected="EUR">
+    <select name="targetCurrency" id="targetCurrency">
 		<script type="text/javascript">
-			var currencies = ${model.currencies};
-			for(var i = 0, len = currencies.length; i < len; i++){
-				currency = currencies[i];
-				selected = "";
-				if(currency == "EUR") selected = "selected";
-				document.write("<option value="+currency+" "+selected+">"+currency+"</option>");			
-			}
+			select(${model.currencies}, "UAH");
 		</script>
 	</select>
 	
-    <select name="baseCurrency" id="baseCurrency" selected="PLN">
+    <select name="baseCurrency" id="baseCurrency">
 		<script type="text/javascript">
-			var currencies = ${model.currencies};
-			for(var i = 0, len = currencies.length; i < len; i++){
-				currency = currencies[i];
-				selected = "";
-				if(currency == "PLN") selected = "selected";
-				document.write("<option value="+currency+" "+selected+">"+currency+"</option>");			
-			}
+			select(${model.currencies}, "USD");
 		</script>
 	</select>
 	
