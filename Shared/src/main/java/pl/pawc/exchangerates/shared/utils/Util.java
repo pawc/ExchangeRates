@@ -94,11 +94,20 @@ public class Util {
 	return listOfCurrencies;
 	}
 	
-	public static boolean validateCurrencies(String targetCurrency, String baseCurrency){
+	public static List<String> getCurrenciesString(){
 		List<Currency> listOfCurrencies = getCurrencies();
-		Currency target = Currency.valueOf(targetCurrency);
-		Currency base = Currency.valueOf(baseCurrency);
-		return (listOfCurrencies.contains(target) && listOfCurrencies.contains(base));
+		ArrayList<String> listOfCurrenciesString = new ArrayList<String>();
+		
+		for(Currency currency : listOfCurrencies) {
+			listOfCurrenciesString.add(currency.toString());
+		}
+		
+		return listOfCurrenciesString;
+	}
+	
+	public static boolean validateCurrencies(String targetCurrency, String baseCurrency){
+		List<String> listOfCurrencies = getCurrenciesString();
+		return (listOfCurrencies.contains(targetCurrency) && listOfCurrencies.contains(baseCurrency));
 		
 	}
 

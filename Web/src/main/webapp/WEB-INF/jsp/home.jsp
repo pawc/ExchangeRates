@@ -17,10 +17,10 @@
  	<script type="text/javascript" src="/Web/static/js/plotter.js"></script>
 </head>  
 <body>  
-	<center>  
-	<b>Exchange Rates</b><br /> 
- 
+	<center>
 	<script type="text/javascript"> 
+	
+	window.onload = doAjaxPost;
 	
 	$( function() {
 		$("#dateFrom").datepicker({
