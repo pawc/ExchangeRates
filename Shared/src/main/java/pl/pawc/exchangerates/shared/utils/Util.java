@@ -115,16 +115,22 @@ public class Util {
 		
 		Date since;
 		Date until;
+		Date dataStart;
 		
 		try{
 			since = format.parse(paramDateFrom);
 			until = format.parse(paramDateTo);
+			dataStart = format.parse("2017-10-20");
 			if(!format.format(since).equals(paramDateFrom)) return false;
 			if(!format.format(until).equals(paramDateTo)) return false;
 			
 		} catch (ParseException e){
 			return false;
 		}
+		
+		if(since.compareTo(until)>0) return false;
+		if(since.compareTo(new Date())>0) return false;
+		if(until.compareTo(dataStart)<0) return false;
 		
 		return true;
 		
