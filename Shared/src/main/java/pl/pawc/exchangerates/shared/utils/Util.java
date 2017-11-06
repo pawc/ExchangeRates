@@ -114,10 +114,16 @@ public class Util {
 	public static boolean validateDates(String paramDateFrom, String paramDateTo) {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 		
-		try {
-			Date since = format.parse(paramDateFrom);
-			Date until = format.parse(paramDateTo);
-		} catch (ParseException e) {
+		Date since;
+		Date until;
+		
+		try{
+			since = format.parse(paramDateFrom);
+			until = format.parse(paramDateTo);
+			if(!format.format(since).equals(paramDateFrom)) return false;
+			if(!format.format(until).equals(paramDateTo)) return false;
+			
+		} catch (ParseException e){
 			return false;
 		}
 		
