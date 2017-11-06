@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import pl.pawc.exchangerates.shared.dao.RecordJdbcTemplate;
 import pl.pawc.exchangerates.shared.model.Currency;
 import pl.pawc.exchangerates.shared.model.Record;
+import pl.pawc.exchangerates.shared.model.Result;
 import pl.pawc.exchangerates.shared.utils.Util;
 
 import org.springframework.ui.ModelMap;
@@ -26,7 +27,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-//@RequestMapping("/")
 public class WebController{
 	
 @RequestMapping("/")
@@ -66,24 +66,13 @@ public ModelAndView home(HttpServletRequest request, HttpServletResponse respons
 		}
 	}
 	
-	ArrayList<Record> list = recordJdbcTemplate.getRecords(targetCurrency, baseCurrency, dateStart, dateEnd);
+	Result result = recordJdbcTemplate.getResult(targetCurrency, baseCurrency, dateStart, dateEnd);
 	
-	double[] minMax = Util.getMinMax(list);
-		
-	Record recordMin = new Record();
-	recordMin.setExchangeRate(minMax[0]);
-	
-	Record recordMax = new Record();
-	recordMax.setExchangeRate(minMax[1]);
-	
-	list.add(recordMin);
-	list.add(recordMax);
-  
 	ObjectMapper objectMapper = new ObjectMapper();
 	
 	String str = null;
 	try{
-		str = objectMapper.writeValueAsString(list);
+		str = objectMapper.writeValueAsString(result);
 	} catch (JsonProcessingException e){
 		e.printStackTrace();
 	}

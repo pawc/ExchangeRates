@@ -2,24 +2,25 @@ function plot(response){
 	
 	var rec = response;
 	generatedDataPoints = [];
-	len = rec.length;
-	min = rec[len-2].exchangeRate;
-	max = rec[len-1].exchangeRate;
+	len = rec.rateDate.length;
+	min = rec.min;
+	max = rec.max;
 	span = max-min;
+	if(span == 0) span = 1;
 	min = min-0.1*span;
 	max = max+0.1*span;
 	
-	for(var i = 0; i <= len-3; i++){
+	for(var i = 0; i < len; i++){
 		generatedDataPoints.push({
-			y : rec[i].exchangeRate,
-			label : rec[i].date
+			y : rec.rateDate[i].exchangeRate,
+			label : rec.rateDate[i].date
 		})
 		
 	}
 		 
 	var chart = new CanvasJS.Chart("chartContainer", {
 		title:{
-			text: rec[0].targetCurrency+"/"+rec[0].baseCurrency       
+			text: rec.targetCurrency+"/"+rec.baseCurrency       
 		},
 		data: [              
 		{
