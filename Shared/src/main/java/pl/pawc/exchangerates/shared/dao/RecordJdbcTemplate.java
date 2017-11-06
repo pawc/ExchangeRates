@@ -7,7 +7,9 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import pl.pawc.exchangerates.shared.model.RateDate;
 import pl.pawc.exchangerates.shared.model.Record;
+import pl.pawc.exchangerates.shared.model.Result;
 import pl.pawc.exchangerates.shared.utils.Util;
 
 public class RecordJdbcTemplate implements RecordDAO{
@@ -39,31 +41,44 @@ public class RecordJdbcTemplate implements RecordDAO{
 		
 	}
 
-	public ArrayList<Record> getRecords(String targetCurrency, String baseCurrency, String dateStart, String dateEnd) {
-		ArrayList<Record> list;
+	public Result getResult(String targetCurrency, String baseCurrency, String dateStart, String dateEnd) {
+		Result result = new Result();
+		ArrayList<RateDate> list = new ArrayList<RateDate>();
+		
+		result.setTargetCurrency(targetCurrency);
+		result.setBaseCurrency(baseCurrency);
+		
 		if(baseCurrency.equals(targetCurrency)){
-			list = getRecords("EUR", dateStart, dateEnd);
+			list = getRateDates("EUR", dateStart, dateEnd);
 			list = Util.fillWithOnes(list);
 		}
 		else if(targetCurrency.equals("PLN")){
-			list = getRecords(baseCurrency, dateStart, dateEnd);
+			list = getRateDates(baseCurrency, dateStart, dateEnd);
 			list = Util.inverseRates(list);
 		}
 		else if(!"PLN".equals(targetCurrency) && !"PLN".equals(baseCurrency)){
-			ArrayList<Record> list1 = getRecords(targetCurrency, dateStart, dateEnd);
-			ArrayList<Record> list2 = getRecords(baseCurrency, dateStart, dateEnd);
+			ArrayList<RateDate> list1 = getRateDates(targetCurrency, dateStart, dateEnd);
+			ArrayList<RateDate> list2 = getRateDates(baseCurrency, dateStart, dateEnd);
 			list = Util.evaluate(list1, list2);
 		}
 		else{
-			list = getRecords(targetCurrency, dateStart, dateEnd);
+			list = getRateDates(targetCurrency, dateStart, dateEnd);
 		}
-		return list;
+		
+		result.setRateDate(list);
+		
+		double[] minMax = Util.getMinMax(list);
+		
+		result.setMin(minMax[0]);
+		result.setMax(minMax[1]);
+		
+		return result;
 	}
 	
-	public ArrayList<Record> getRecords(String targetCurrency, String dateStart, String dateEnd){
-		String SQL = "select * from records where targetCurrency='"+targetCurrency+"' "
+	public ArrayList<RateDate> getRateDates(String targetCurrency, String dateStart, String dateEnd){
+		String SQL = "select exchangeRate,date from records where targetCurrency='"+targetCurrency+"' "
 				+ "and date between '"+dateStart+"' and '"+dateEnd+"';";
-		ArrayList<Record> results = (ArrayList<Record>) jdbcTemplateObject.query(SQL, new RecordMapper()); 
+		ArrayList<RateDate> results = (ArrayList<RateDate>) jdbcTemplateObject.query(SQL, new RateDateMapper()); 
 		return results;
 	}
 

@@ -75,13 +75,13 @@
     <form method="get">  
     <select name="targetCurrency" id="targetCurrency">
 		<script type="text/javascript">
-			select(${model.currencies}, "UAH");
+			select(${model.currencies}, "EUR");
 		</script>
 	</select>
 	
     <select name="baseCurrency" id="baseCurrency">
 		<script type="text/javascript">
-			select(${model.currencies}, "USD");
+			select(${model.currencies}, "PLN");
 		</script>
 	</select>
 	

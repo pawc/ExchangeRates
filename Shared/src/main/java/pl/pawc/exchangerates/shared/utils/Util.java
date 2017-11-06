@@ -14,50 +14,49 @@ import org.apache.commons.lang3.EnumUtils;
 
 import pl.pawc.exchangerates.shared.model.Currency;
 import pl.pawc.exchangerates.shared.model.Record;
+import pl.pawc.exchangerates.shared.model.RateDate;
 
 public class Util {
 
-	public static ArrayList<Record> inverseRates(ArrayList<Record> list){
-		for(Record record : list){
-			String temp = record.getBaseCurrency();
-			record.setBaseCurrency(record.getTargetCurrency());
-			record.setTargetCurrency(temp);
-			record.setExchangeRate(1/record.getExchangeRate());
+	public static ArrayList<RateDate> inverseRates(ArrayList<RateDate> list){
+		for(RateDate rateDate : list){
+			rateDate.setExchangeRate(1/rateDate.getExchangeRate());
 		}
 		return list;
 	}
 	
-	public static ArrayList<Record> fillWithOnes(ArrayList<Record> list){
-		for(Record record : list){
-			record.setExchangeRate(1);
+	public static ArrayList<RateDate> fillWithOnes(ArrayList<RateDate> list){
+		for(RateDate rateDate : list){
+			rateDate.setExchangeRate(1);
 		}
 		return list;
 	}
 	
-	public static ArrayList<Record> evaluate(ArrayList<Record> list1, ArrayList<Record> list2){
-		ArrayList<Record> result = new ArrayList<Record>();
+	public static ArrayList<RateDate> evaluate(ArrayList<RateDate> list1, ArrayList<RateDate> list2){
+		
+		ArrayList<RateDate> result = new ArrayList<RateDate>();
+		
+		double rate;
+		
 		for(int i=0; i<=list1.size()-1; i++){
-			String targetCurrency = list1.get(i).getTargetCurrency();
-			String baseCurrency = list2.get(i).getTargetCurrency();
-			Date date = list1.get(i).getDate();
-			double rate = list1.get(i).getExchangeRate()/list2.get(i).getExchangeRate();
+		
+			rate = list1.get(i).getExchangeRate()/list2.get(i).getExchangeRate();
 
-			Record record = new Record();
-			record.setTargetCurrency(targetCurrency);
-			record.setBaseCurrency(baseCurrency);
-			record.setDate(date);
-			record.setExchangeRate(rate);
+			RateDate rateDate = new RateDate();
+			rateDate.setExchangeRate(rate);
+			rateDate.setDate(list1.get(i).getDate());
 			
-			result.add(record);
+			result.add(rateDate);
 		}
 		
 		return result;
 	}
 	
-	public static ArrayList<Record> sortByDates(ArrayList<Record> list) {
-		Collections.sort(list, new Comparator<Record>(){
-			public int compare(Record r1, Record r2) {
-				return r1.getDate().compareTo(r2.getDate());	
+	public static ArrayList<RateDate> sortByDates(ArrayList<RateDate> list) {
+		Collections.sort(list, new Comparator<RateDate>(){
+
+			public int compare(RateDate r1, RateDate r2) {
+				return r1.getDate().compareTo(r2.getDate());
 			}
 			
 		});
@@ -65,9 +64,9 @@ public class Util {
 		return list;
 	}
 	
-	public static ArrayList<Record> sortByRates(ArrayList<Record> list) {
-		Collections.sort(list, new Comparator<Record>(){
-			public int compare(Record r1, Record r2) {
+	public static ArrayList<RateDate> sortByRates(ArrayList<RateDate> list) {
+		Collections.sort(list, new Comparator<RateDate>(){
+			public int compare(RateDate r1, RateDate r2) {
 				return Double.compare(r1.getExchangeRate(), r2.getExchangeRate());		
 			}
 			
@@ -131,7 +130,7 @@ public class Util {
 		
 	}
 
-	public static double[] getMinMax(ArrayList<Record> list) {
+	public static double[] getMinMax(ArrayList<RateDate> list) {
 
 		list = Util.sortByRates(list);
 		
