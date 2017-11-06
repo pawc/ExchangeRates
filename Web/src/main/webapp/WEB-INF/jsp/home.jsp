@@ -25,9 +25,11 @@
 	$( function() {
 		$("#dateFrom").datepicker({
 			dateFormat: "yy-mm-dd",
+			minDate: "2017-10-20"
 		});  
 		$("#dateTo").datepicker({
 			dateFormat: "yy-mm-dd",
+			minDate: "2017-10-20"
 		}); 
 	});
 		
