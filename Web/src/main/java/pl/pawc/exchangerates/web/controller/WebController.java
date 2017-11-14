@@ -48,8 +48,8 @@ public ModelAndView home(HttpServletRequest request, HttpServletResponse respons
 public @ResponseBody  
 String ajax(@RequestParam(value = "targetCurrency") String targetCurrency,
 		@RequestParam(value = "baseCurrency") String baseCurrency,
-		@RequestParam(value = "dateFrom") String dateStart,
-		@RequestParam(value = "dateTo") String dateEnd,
+		@RequestParam(value = "dateStart") String dateStart,
+		@RequestParam(value = "dateEnd") String dateEnd,
 		HttpServletResponse response){ 
   
 	ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");

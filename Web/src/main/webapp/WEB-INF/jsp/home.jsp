@@ -23,11 +23,11 @@
 	window.onload = doAjaxPost;
 	
 	$( function() {
-		$("#dateFrom").datepicker({
+		$("#dateStart").datepicker({
 			dateFormat: "yy-mm-dd",
 			minDate: "2017-10-20"
 		});  
-		$("#dateTo").datepicker({
+		$("#dateEnd").datepicker({
 			dateFormat: "yy-mm-dd",
 			minDate: "2017-10-20"
 		}); 
@@ -50,16 +50,16 @@
 	var targetCurrency = $('#targetCurrency').val(); 
 	var baseCurrency = $('#baseCurrency').val();
 
-	var dateFrom = $('#dateFrom').val();
-	var dateTo = $('#dateTo').val();
+	var dateStart = $('#dateStart').val();
+	var dateEnd = $('#dateEnd').val();
 	
-	if(!validateDates(dateFrom, dateTo)) return;
+	if(!validateDates(dateStart, dateEnd)) return;
 	
 	$.ajax({  
 		type : "Get",   
 		url : "ajax.html",   
 		dataType: "json",
-		data : "targetCurrency=" + targetCurrency + "&baseCurrency=" + baseCurrency +"&dateFrom=" + dateFrom +"&dateTo=" + dateTo,
+		data : "targetCurrency=" + targetCurrency + "&baseCurrency=" + baseCurrency +"&dateStart=" + dateStart +"&dateEnd=" + dateEnd,
 		
 		success : function(response) {  
 			plot(response);
@@ -87,13 +87,13 @@
 	
 	<input type="button" id="reverseButton" value="reverse" /> 
 	
-	<input type="text" name="dateFrom" id="dateFrom" value='2017-10-20'/>
+	<input type="text" name="dateStart" id="dateStart" value='2017-10-20'/>
 	<b>-</b>
 	
 	<script type="text/javascript">
 	var today = new Date();
 	var format = dateFormat(today, "yyyy-mm-dd");
-	document.write("<input type='text' name='dateTo' id='dateTo' value='"+format+"'/>");	
+	document.write("<input type='text' name='dateEnd' id='dateEnd' value='"+format+"'/>");	
 	</script>
 	
 	
