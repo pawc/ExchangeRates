@@ -4,7 +4,6 @@ var max;
 
 function plot(response){	
 	
-	console.log(chart == null);
 	if(chart != null){
 		updateChart(response);
 		return;
@@ -74,16 +73,22 @@ function updateChart(response){
 function updateMinMax(response){
 	minTemp = response.min;
 	maxTemp = response.max;
-	span = maxTemp-minTemp;
+	
+	if(min > minTemp) min = minTemp;
+	if(max < maxTemp) max = maxTemp;
+		
+	span = max - min;
 	if(span == 0) span = 1;
 	
-	if(min > minTemp){
-		min = minTemp;
-		chart.options.axisY.minimum = min;
-	}
-	if(max < maxTemp){
-		max = maxTemp;
-		chart.options.axisY.maximum = max;
-	}
+	chart.options.axisY.minimum = min - span * 0.1;
+	chart.options.axisY.maximum = max + span * 0.1;
+}
 
+function clearChart(){
+	for(var i=chart.data.length-1; i >= 0; i--){
+		chart.data[i].remove();
+	}
+	min = Number.POSITIVE_INFINITY;
+	max = Number.NEGATIVE_INFINITY;
+	chart.render();
 }

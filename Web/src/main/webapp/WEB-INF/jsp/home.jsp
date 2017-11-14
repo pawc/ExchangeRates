@@ -99,6 +99,9 @@
 	
 	<input type="button" value="plot" onclick="doAjaxPost();" />  
     </form>
+    <form>
+   	<input type="button" value="clear" onclick="clearChart();" />  
+	</form>
     
 	<div id="chartContainer" style="height: 400px; width: 100%;"></div>
   
