@@ -45,7 +45,7 @@
 		});
 	});
 
-	function doAjaxPost() {  
+	function doAjaxPost(choice) {  
      
 	var targetCurrency = $('#targetCurrency').val(); 
 	var baseCurrency = $('#baseCurrency').val();
@@ -62,7 +62,7 @@
 		data : "targetCurrency=" + targetCurrency + "&baseCurrency=" + baseCurrency +"&dateStart=" + dateStart +"&dateEnd=" + dateEnd,
 		
 		success : function(response) {  
-			plot(response);
+			plot(response, choice);
 		}, 
 			
 		error : function(e) {  
@@ -95,13 +95,11 @@
 	var format = dateFormat(today, "yyyy-mm-dd");
 	document.write("<input type='text' name='dateEnd' id='dateEnd' value='"+format+"'/>");	
 	</script>
-	
-	
-	<input type="button" value="plot" onclick="doAjaxPost();" />  
-    </form>
-    <form>
+		
+	<input type="button" value="plot" onclick="doAjaxPost(true);" />  
+	<input type="button" value="add" onclick="doAjaxPost(false);" />  
    	<input type="button" value="clear" onclick="clearChart();" />  
-	</form>
+    </form>
     
 	<div id="chartContainer" style="height: 400px; width: 100%;"></div>
   

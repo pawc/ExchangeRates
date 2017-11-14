@@ -2,9 +2,12 @@ var chart;
 var min;
 var max;
 
-function plot(response){	
+function plot(response, choice){	
 	
 	if(chart != null){
+		if(choice){
+			clearChart();
+		}
 		updateChart(response);
 		return;
 	}
