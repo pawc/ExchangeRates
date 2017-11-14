@@ -1,26 +1,36 @@
-function plot(response){		
+var chart;
+var min;
+var max;
+
+function plot(response){	
 	
-	var rec = response;
-	generatedDataPoints = [];
-	len = rec.rateDate.length;
-	min = rec.min;
-	max = rec.max;
-	span = max-min;
+	console.log(chart == null);
+	if(chart != null){
+		updateChart(response);
+		return;
+	}
+
+	min = response.min;
+	max = response.max;
+	span = max - min;
 	if(span == 0) span = 1;
 	min = min-0.1*span;
 	max = max+0.1*span;
 	
+	generatedDataPoints = [];
+	len = response.rateDate.length;
+	
 	for(var i = 0; i < len; i++){
 		generatedDataPoints.push({
-			y : rec.rateDate[i].exchangeRate,
-			label : rec.rateDate[i].date
+			y : response.rateDate[i].exchangeRate,
+			label : response.rateDate[i].date
 		})
 		
 	}
 		 
-	var chart = new CanvasJS.Chart("chartContainer", {
+	chart = new CanvasJS.Chart("chartContainer", {
 		title:{
-			text: rec.targetCurrency+"/"+rec.baseCurrency       
+			text: response.targetCurrency+"/"+response.baseCurrency       
 		},
 		data: [              
 		{
@@ -36,4 +46,44 @@ function plot(response){
 	});
 	chart.render();
 	
+}
+
+function updateChart(response){
+	
+	generatedDataPoints = [];
+	len = response.rateDate.length;
+	
+	for(var i = 0; i < len; i++){
+		generatedDataPoints.push({
+			y : response.rateDate[i].exchangeRate,
+			label : response.rateDate[i].date
+		})
+		
+	}
+	
+    var newSeries = {
+		type: "line",
+		dataPoints: generatedDataPoints
+    };
+    
+	chart.options.data.push(newSeries);
+	updateMinMax(response);
+	chart.render();
+}
+
+function updateMinMax(response){
+	minTemp = response.min;
+	maxTemp = response.max;
+	span = maxTemp-minTemp;
+	if(span == 0) span = 1;
+	
+	if(min > minTemp){
+		min = minTemp;
+		chart.options.axisY.minimum = min;
+	}
+	if(max < maxTemp){
+		max = maxTemp;
+		chart.options.axisY.maximum = max;
+	}
+
 }
