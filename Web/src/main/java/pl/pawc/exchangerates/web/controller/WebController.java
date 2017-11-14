@@ -1,7 +1,6 @@
 package pl.pawc.exchangerates.web.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import pl.pawc.exchangerates.shared.dao.RecordJdbcTemplate;
 import pl.pawc.exchangerates.shared.model.Currency;
-import pl.pawc.exchangerates.shared.model.Record;
 import pl.pawc.exchangerates.shared.model.Result;
 import pl.pawc.exchangerates.shared.utils.Util;
 
@@ -46,9 +44,9 @@ public ModelAndView home(HttpServletRequest request, HttpServletResponse respons
 	return new ModelAndView("home", "model", model);
 }
 
- @RequestMapping("/ajax")  
- public @ResponseBody  
- String ajax(@RequestParam(value = "targetCurrency") String targetCurrency,
+@RequestMapping("/ajax")  
+public @ResponseBody  
+String ajax(@RequestParam(value = "targetCurrency") String targetCurrency,
 		@RequestParam(value = "baseCurrency") String baseCurrency,
 		@RequestParam(value = "dateFrom") String dateStart,
 		@RequestParam(value = "dateTo") String dateEnd,

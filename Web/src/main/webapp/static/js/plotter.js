@@ -28,13 +28,12 @@ function plot(response){
 	}
 		 
 	chart = new CanvasJS.Chart("chartContainer", {
-		title:{
-			text: response.targetCurrency+"/"+response.baseCurrency       
-		},
 		data: [              
 		{
 			type: "line",
-			dataPoints: generatedDataPoints
+			showInLegend: true,
+			legendText: response.targetCurrency+"/"+response.baseCurrency,
+			dataPoints: generatedDataPoints	
 		}
 		],
 		axisY:{
@@ -62,6 +61,8 @@ function updateChart(response){
 	
     var newSeries = {
 		type: "line",
+		showInLegend: true,
+		legendText: response.targetCurrency+"/"+response.baseCurrency,
 		dataPoints: generatedDataPoints
     };
     
