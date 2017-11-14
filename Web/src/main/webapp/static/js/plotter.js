@@ -25,7 +25,7 @@ function plot(response, choice){
 	for(var i = 0; i < len; i++){
 		generatedDataPoints.push({
 			y : response.rateDate[i].exchangeRate,
-			label : response.rateDate[i].date
+			x : new Date(response.rateDate[i].date)
 		})
 		
 	}
@@ -57,7 +57,7 @@ function updateChart(response){
 	for(var i = 0; i < len; i++){
 		generatedDataPoints.push({
 			y : response.rateDate[i].exchangeRate,
-			label : response.rateDate[i].date
+			x : new Date(response.rateDate[i].date)
 		})
 		
 	}
