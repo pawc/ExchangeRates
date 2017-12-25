@@ -49,12 +49,10 @@ public class RecordJdbcTemplate implements RecordDAO{
 		result.setBaseCurrency(baseCurrency);
 		
 		if(baseCurrency.equals(targetCurrency)){
-			list = getRateDates("EUR", dateStart, dateEnd);
-			list = Util.fillWithOnes(list);
+			list = getIdent(dateStart, dateEnd);
 		}
 		else if(targetCurrency.equals("PLN")){
-			list = getRateDates(baseCurrency, dateStart, dateEnd);
-			list = Util.inverseRates(list);
+			list = getPLN(baseCurrency, dateStart, dateEnd);
 		}
 		else if(!"PLN".equals(targetCurrency) && !"PLN".equals(baseCurrency)){
 			list = getRateDates(targetCurrency, baseCurrency, dateStart, dateEnd);
@@ -74,8 +72,8 @@ public class RecordJdbcTemplate implements RecordDAO{
 	}
 	
 	public ArrayList<RateDate> getRateDates(String targetCurrency, String dateStart, String dateEnd){
-		String SQL = "select exchangeRate,date from records where targetCurrency='"+targetCurrency+"' "
-			+ "and date between '"+dateStart+"' and '"+dateEnd+"';";
+		String SQL = "select exchangeRate, date from records where targetCurrency='"+targetCurrency+"' "
+			+ "and date between '"+dateStart+"' and '"+dateEnd+"' order by date;";
 		ArrayList<RateDate> results = (ArrayList<RateDate>) jdbcTemplateObject.query(SQL, new RateDateMapper()); 
 		return results;
 	}
@@ -86,6 +84,18 @@ public class RecordJdbcTemplate implements RecordDAO{
 			"join (select exchangeRate as rate2,  date as d2 from records where targetCurrency='"+baseCurrency+"') as tab2 on d1=d2 "+
 			"where d1 and d2 between '"+dateStart+"' and '"+dateEnd+"' "+
 			"order by date asc;";
+		ArrayList<RateDate> results = (ArrayList<RateDate>) jdbcTemplateObject.query(SQL, new RateDateMapper()); 
+		return results;
+	}
+	
+	public ArrayList<RateDate> getIdent(String dateStart, String dateEnd){
+		String SQL = "select distinct 1 as exchangeRate, date from records where date between '"+dateStart+"' and '"+dateEnd+"' order by date;";
+		ArrayList<RateDate> results = (ArrayList<RateDate>) jdbcTemplateObject.query(SQL, new RateDateMapper()); 
+		return results;
+	}
+	
+	public ArrayList<RateDate> getPLN(String baseCurrency, String dateStart, String dateEnd){
+		String SQL = "select 1/exchangeRate as exchangeRate, date from records where targetCurrency='"+baseCurrency+"' and date between '"+dateStart+"' and '"+dateEnd+"' order by date;";
 		ArrayList<RateDate> results = (ArrayList<RateDate>) jdbcTemplateObject.query(SQL, new RateDateMapper()); 
 		return results;
 	}
