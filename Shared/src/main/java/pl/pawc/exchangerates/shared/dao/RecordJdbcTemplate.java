@@ -84,6 +84,7 @@ public class RecordJdbcTemplate implements RecordDAO{
 		String SQL = "select rate1/rate2 as exchangeRate, d1 as date from "+
 			"(select exchangeRate as rate1, date as d1 from records where targetCurrency='"+targetCurrency+"') as tab1 "+
 			"join (select exchangeRate as rate2,  date as d2 from records where targetCurrency='"+baseCurrency+"') as tab2 on d1=d2 "+
+			"where d1 and d2 between '"+dateStart+"' and '"+dateEnd+"' "+
 			"order by date asc;";
 		ArrayList<RateDate> results = (ArrayList<RateDate>) jdbcTemplateObject.query(SQL, new RateDateMapper()); 
 		return results;
