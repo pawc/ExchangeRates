@@ -17,40 +17,6 @@ import pl.pawc.exchangerates.shared.model.Record;
 import pl.pawc.exchangerates.shared.model.RateDate;
 
 public class Util {
-
-	public static ArrayList<RateDate> inverseRates(ArrayList<RateDate> list){
-		for(RateDate rateDate : list){
-			rateDate.setExchangeRate(1/rateDate.getExchangeRate());
-		}
-		return list;
-	}
-	
-	public static ArrayList<RateDate> fillWithOnes(ArrayList<RateDate> list){
-		for(RateDate rateDate : list){
-			rateDate.setExchangeRate(1);
-		}
-		return list;
-	}
-	
-	public static ArrayList<RateDate> evaluate(ArrayList<RateDate> list1, ArrayList<RateDate> list2){
-		
-		ArrayList<RateDate> result = new ArrayList<RateDate>();
-		
-		double rate;
-		
-		for(int i=0; i<=list1.size()-1; i++){
-		
-			rate = list1.get(i).getExchangeRate()/list2.get(i).getExchangeRate();
-
-			RateDate rateDate = new RateDate();
-			rateDate.setExchangeRate(rate);
-			rateDate.setDate(list1.get(i).getDate());
-			
-			result.add(rateDate);
-		}
-		
-		return result;
-	}
 	
 	public static ArrayList<RateDate> sortByDates(ArrayList<RateDate> list) {
 		Collections.sort(list, new Comparator<RateDate>(){
