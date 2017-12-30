@@ -23,6 +23,7 @@ public class Parser implements IParser {
 		Document document = null;
 		
 		try {
+			saxBuilder.setValidation(false);
 			document = saxBuilder.build(file);
 		} 
 		catch (JDOMException e){
