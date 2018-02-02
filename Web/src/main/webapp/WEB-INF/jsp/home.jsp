@@ -87,7 +87,13 @@
 	
 	<input type="button" id="reverseButton" value="reverse" /> 
 	
-	<input type="text" name="dateStart" id="dateStart" value='2017-10-20'/>
+	<script>
+	var todayMinus30 = new Date();
+	todayMinus30.setDate(todayMinus30.getDate() - 30);
+	var format = dateFormat(todayMinus30, "yyyy-mm-dd");
+	document.write("<input type='text' name='dateStart' id='dateStart' value='"+format+"'/> ");
+	</script>
+	
 	<b>-</b>
 	
 	<script type="text/javascript">

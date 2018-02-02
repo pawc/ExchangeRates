@@ -159,6 +159,20 @@
 					<server>TomcatServer</server>
 					<path>/Web</path>
 				</configuration>
+				
+				<executions>
+				<execution>
+				<id>exec-redep</id>
+				<goals><goal>redeploy</goal></goals>
+				<phase>package</phase>		
+					<configuration>
+						<url>http://localhost:8080/manager/text</url>
+						<path>/Web</path>
+						<username>manager</username>
+						<password>mylocaltomcatpassword</password>
+					</configuration>
+				</execution>			
+				</executions>
 			</plugin>
     	</plugins>
 	</build>
